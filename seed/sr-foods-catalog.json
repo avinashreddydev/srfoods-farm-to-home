@@ -1,0 +1,369 @@
+{
+  "_meta": {
+    "store": "SR Foods – Farm to Home",
+    "purpose": "Seed catalog to load into your Storekit dashboard so the storefront shows real SR Foods pickles & karam.",
+    "howToUse": [
+      "1. Create the two categories below with EXACTLY these slugs: 'pickles' and 'karam' (the /pickles and /karam pages query by slug).",
+      "2. Create each product under its category. Upload the listed image URLs (or your own).",
+      "3. For every product VARIANT, set the three custom attributes: telugu, heat (0-5), weight. The app reads brand fields from variant.attributes (Storekit has no product-level metadata field).",
+      "4. Flag isBestseller / isFeatured products to populate the homepage 'Best Sellers' row.",
+      "5. Prices are decimal strings in INR (Storekit stores variant.price as a string)."
+    ],
+    "attributeContract": {
+      "telugu": "Telugu display name, shown on cards & product page (e.g. ఆవకాయ)",
+      "heat": "Spice level 0-5, rendered as 🌶️ icons",
+      "weight": "Pack size label, e.g. '500 g' (also used as the variant selector label)"
+    },
+    "imagesVerified": "All image URLs are Pexels CDN links verified to return HTTP 200 on 2026-06-07.",
+    "currency": "INR"
+  },
+
+  "categories": [
+    {
+      "name": "Pickles",
+      "slug": "pickles",
+      "description": "Slow-cured Andhra pickles in cold-pressed sesame oil — avakaya, gongura, pandu mirchi and more."
+    },
+    {
+      "name": "Karam",
+      "slug": "karam",
+      "description": "Stone-ground karam podis & masalas — fiery Guntur red, garlicky vellulli and aromatic blends."
+    }
+  ],
+
+  "products": [
+    {
+      "category": "pickles",
+      "name": "Avakaya Mango Pickle",
+      "slug": "avakaya-mango-pickle",
+      "description": "The legendary Andhra mango pickle — raw mango chunks slow-soaked in mustard, garlic and Guntur red chilli oil. Fierce, oily and unapologetically bold.",
+      "isBestseller": true,
+      "isFeatured": true,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/8599631/pexels-photo-8599631.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/4198417/pexels-photo-4198417.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "250 g",
+          "sku": "PKL-AVK-250",
+          "price": "199.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "ఆవకాయ", "heat": "5", "weight": "250 g" }
+        },
+        {
+          "name": "500 g",
+          "sku": "PKL-AVK-500",
+          "price": "349.00",
+          "compareAtPrice": "399.00",
+          "inventoryQty": 100,
+          "attributes": { "telugu": "ఆవకాయ", "heat": "5", "weight": "500 g" }
+        },
+        {
+          "name": "1 kg",
+          "sku": "PKL-AVK-1000",
+          "price": "649.00",
+          "compareAtPrice": null,
+          "inventoryQty": 60,
+          "attributes": { "telugu": "ఆవకాయ", "heat": "5", "weight": "1 kg" }
+        }
+      ]
+    },
+    {
+      "category": "pickles",
+      "name": "Gongura Pachadi",
+      "slug": "gongura-pachadi",
+      "description": "Tangy gongura (sorrel) leaves stone-pounded with red chillies, garlic and sesame — Andhra's most loved leafy pickle. Sharp, sour and deeply savoury.",
+      "isBestseller": true,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/7113859/pexels-photo-7113859.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/12737917/pexels-photo-12737917.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "250 g",
+          "sku": "PKL-GNG-250",
+          "price": "189.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "గోంగూర పచ్చడి", "heat": "4", "weight": "250 g" }
+        },
+        {
+          "name": "500 g",
+          "sku": "PKL-GNG-500",
+          "price": "329.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "గోంగూర పచ్చడి", "heat": "4", "weight": "500 g" }
+        }
+      ]
+    },
+    {
+      "category": "pickles",
+      "name": "Pandu Mirchi Nilava Pachadi",
+      "slug": "pandu-mirchi-nilava-pachadi",
+      "description": "Fiery whole ripe-red chilli pickle, sun-cured in cold-pressed sesame oil with mustard and fenugreek. A spoonful is enough to light up a plate of hot rice.",
+      "isBestseller": true,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/32522189/pexels-photo-32522189.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/112780/pexels-photo-112780.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "250 g",
+          "sku": "PKL-PDM-250",
+          "price": "219.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "పండు మిర్చి నిలవ పచ్చడి", "heat": "5", "weight": "250 g" }
+        },
+        {
+          "name": "500 g",
+          "sku": "PKL-PDM-500",
+          "price": "379.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "పండు మిర్చి నిలవ పచ్చడి", "heat": "5", "weight": "500 g" }
+        }
+      ]
+    },
+    {
+      "category": "pickles",
+      "name": "Tomato Pachadi",
+      "slug": "tomato-pachadi",
+      "description": "Slow-cooked ripe tomatoes tempered with mustard, curry leaves and red chilli. Mellow, tangy and comforting — a gentler entry into Andhra pickles.",
+      "isBestseller": false,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/12737917/pexels-photo-12737917.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/20408462/pexels-photo-20408462.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "500 g",
+          "sku": "PKL-TMT-500",
+          "price": "299.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "టమాటా పచ్చడి", "heat": "3", "weight": "500 g" }
+        }
+      ]
+    },
+    {
+      "category": "pickles",
+      "name": "Usirikaya Amla Pickle",
+      "slug": "usirikaya-amla-pickle",
+      "description": "Gooseberry (amla) pickle pounded with mustard and chilli — bracingly sour, lightly bitter and full of goodness. A traditional winter favourite.",
+      "isBestseller": false,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/8599636/pexels-photo-8599636.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/8599631/pexels-photo-8599631.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "500 g",
+          "sku": "PKL-USK-500",
+          "price": "319.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "ఉసిరికాయ పచ్చడి", "heat": "3", "weight": "500 g" }
+        }
+      ]
+    },
+    {
+      "category": "pickles",
+      "name": "Nimmakaya Lemon Pickle",
+      "slug": "nimmakaya-lemon-pickle",
+      "description": "Sun-matured lemon pickle with salt, fenugreek and red chilli — bright, zesty and tangy. Softens beautifully over weeks of curing.",
+      "isBestseller": false,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/6220707/pexels-photo-6220707.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/6220710/pexels-photo-6220710.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "500 g",
+          "sku": "PKL-NMK-500",
+          "price": "289.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "నిమ్మకాయ పచ్చడి", "heat": "2", "weight": "500 g" }
+        }
+      ]
+    },
+
+    {
+      "category": "karam",
+      "name": "Guntur Mirchi Karam",
+      "slug": "guntur-mirchi-karam",
+      "description": "Pure stone-ground Guntur red chilli powder — deep red colour, sharp aroma and unmistakable Andhra heat. The backbone of every Andhra kitchen.",
+      "isBestseller": true,
+      "isFeatured": true,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/4198417/pexels-photo-4198417.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/33440714/pexels-photo-33440714.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "250 g",
+          "sku": "KRM-GNT-250",
+          "price": "159.00",
+          "compareAtPrice": null,
+          "inventoryQty": 150,
+          "attributes": { "telugu": "గుంటూరు మిర్చి కారం", "heat": "5", "weight": "250 g" }
+        },
+        {
+          "name": "500 g",
+          "sku": "KRM-GNT-500",
+          "price": "269.00",
+          "compareAtPrice": "299.00",
+          "inventoryQty": 150,
+          "attributes": { "telugu": "గుంటూరు మిర్చి కారం", "heat": "5", "weight": "500 g" }
+        }
+      ]
+    },
+    {
+      "category": "karam",
+      "name": "Vellulli Karam",
+      "slug": "vellulli-karam",
+      "description": "Garlic-rich karam podi — pounded with toasted chillies, garlic and salt. Spoon it over hot rice with a drizzle of ghee. Pungent and addictive.",
+      "isBestseller": true,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/8185493/pexels-photo-8185493.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/4871244/pexels-photo-4871244.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "100 g",
+          "sku": "KRM-VEL-100",
+          "price": "129.00",
+          "compareAtPrice": null,
+          "inventoryQty": 120,
+          "attributes": { "telugu": "వెల్లుల్లి కారం", "heat": "4", "weight": "100 g" }
+        },
+        {
+          "name": "250 g",
+          "sku": "KRM-VEL-250",
+          "price": "249.00",
+          "compareAtPrice": null,
+          "inventoryQty": 120,
+          "attributes": { "telugu": "వెల్లుల్లి కారం", "heat": "4", "weight": "250 g" }
+        }
+      ]
+    },
+    {
+      "category": "karam",
+      "name": "Idli Karam Podi",
+      "slug": "idli-karam-podi",
+      "description": "Classic idli podi — roasted lentils, sesame and red chilli ground into a fragrant, spicy powder. The perfect partner for idli, dosa and ghee rice.",
+      "isBestseller": false,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/33440714/pexels-photo-33440714.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/8474070/pexels-photo-8474070.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "250 g",
+          "sku": "KRM-IDL-250",
+          "price": "229.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "ఇడ్లి కారప్పొడి", "heat": "3", "weight": "250 g" }
+        }
+      ]
+    },
+    {
+      "category": "karam",
+      "name": "Kandi Podi",
+      "slug": "kandi-podi",
+      "description": "Toor dal podi — slow-roasted lentils with cumin, garlic and a whisper of chilli. Mild, nutty and wholesome; loved by kids and elders alike.",
+      "isBestseller": false,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/15107600/pexels-photo-15107600.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/4871244/pexels-photo-4871244.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "250 g",
+          "sku": "KRM-KND-250",
+          "price": "239.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "కంది పొడి", "heat": "2", "weight": "250 g" }
+        }
+      ]
+    },
+    {
+      "category": "karam",
+      "name": "Kobbari Karam",
+      "slug": "kobbari-karam",
+      "description": "Dry coconut podi — roasted coconut, chilli and tamarind ground into a sweet-spicy powder. Sprinkle over rice, dosa or upma for instant flavour.",
+      "isBestseller": false,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/4871244/pexels-photo-4871244.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/8474070/pexels-photo-8474070.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "250 g",
+          "sku": "KRM-KOB-250",
+          "price": "229.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "కొబ్బరి కారం", "heat": "2", "weight": "250 g" }
+        }
+      ]
+    },
+    {
+      "category": "karam",
+      "name": "Sambar Podi",
+      "slug": "sambar-podi",
+      "description": "Slow-roasted lentils, coriander seed and chilli — a fragrant blend that builds restaurant-style sambar at home. Aromatic, balanced and warming.",
+      "isBestseller": false,
+      "isFeatured": false,
+      "isAvailable": true,
+      "images": [
+        "https://images.pexels.com/photos/8474070/pexels-photo-8474070.jpeg?auto=compress&cs=tinysrgb&w=1200",
+        "https://images.pexels.com/photos/6220710/pexels-photo-6220710.jpeg?auto=compress&cs=tinysrgb&w=1200"
+      ],
+      "variants": [
+        {
+          "name": "250 g",
+          "sku": "KRM-SMB-250",
+          "price": "229.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "సాంబార్ పొడి", "heat": "3", "weight": "250 g" }
+        },
+        {
+          "name": "500 g",
+          "sku": "KRM-SMB-500",
+          "price": "399.00",
+          "compareAtPrice": null,
+          "inventoryQty": 100,
+          "attributes": { "telugu": "సాంబార్ పొడి", "heat": "3", "weight": "500 g" }
+        }
+      ]
+    }
+  ]
+}
