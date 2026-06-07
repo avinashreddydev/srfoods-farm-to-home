@@ -92,9 +92,10 @@ export default async function ProductPage({
               </div>
 
               {product.description && (
-                <p className="mt-6 text-base leading-relaxed text-charcoal/75">
-                  {product.description}
-                </p>
+                <div
+                  className="mt-6 text-base leading-relaxed text-charcoal/75 [&_a]:text-chilli [&_a]:underline [&_h2]:mt-5 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-maroon [&_h3]:mt-4 [&_h3]:font-display [&_h3]:font-bold [&_h3]:text-maroon [&_li]:mb-1 [&_ol]:mt-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-3 [&_strong]:font-semibold [&_strong]:text-maroon [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5"
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
               )}
 
               <div className="mt-8 border-t border-maroon/10 pt-8">

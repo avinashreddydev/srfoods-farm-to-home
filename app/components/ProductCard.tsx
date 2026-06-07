@@ -6,6 +6,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { storefront } from "@/lib/storekit-client";
 import { formatMoney } from "../lib/format";
+import { stripHtml } from "../lib/html";
 import type { StoreProduct } from "../lib/types";
 
 export function ProductCard({
@@ -84,7 +85,7 @@ export function ProductCard({
         </Link>
         {product.description && (
           <p className="mt-2 line-clamp-2 text-sm text-charcoal/70">
-            {product.description}
+            {stripHtml(product.description)}
           </p>
         )}
         <div className="mt-4 flex items-end justify-between">
