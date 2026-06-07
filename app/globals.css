@@ -48,23 +48,35 @@ body {
   background-image:
     radial-gradient(rgba(140, 10, 30, 0.08) 1px, transparent 1px),
     radial-gradient(rgba(232, 178, 42, 0.06) 1px, transparent 1px);
-  background-size: 22px 22px, 36px 36px;
-  background-position: 0 0, 11px 11px;
+  background-size:
+    22px 22px,
+    36px 36px;
+  background-position:
+    0 0,
+    11px 11px;
 }
 
 .text-shadow-flame {
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25), 0 6px 24px rgba(200, 16, 46, 0.45);
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.25),
+    0 6px 24px rgba(200, 16, 46, 0.45);
 }
 
 .btn-primary {
   background: linear-gradient(180deg, #d8132f 0%, #a90c23 100%);
   color: #fff7e6;
-  box-shadow: 0 6px 0 #5a0512, 0 14px 30px -10px rgba(200, 16, 46, 0.6);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow:
+    0 6px 0 #5a0512,
+    0 14px 30px -10px rgba(200, 16, 46, 0.6);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 0 #5a0512, 0 18px 36px -10px rgba(200, 16, 46, 0.7);
+  box-shadow:
+    0 8px 0 #5a0512,
+    0 18px 36px -10px rgba(200, 16, 46, 0.7);
 }
 .btn-primary:active {
   transform: translateY(2px);
@@ -74,7 +86,9 @@ body {
 .btn-outline {
   border: 2px solid var(--color-cream);
   color: var(--color-cream);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 .btn-outline:hover {
   background: var(--color-cream);
@@ -82,5 +96,91 @@ body {
 }
 
 .chip-divider {
-  background: linear-gradient(90deg, transparent, var(--color-turmeric), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-turmeric),
+    transparent
+  );
+}
+
+/* Rich-text rendering for Storekit CMS content pages (content.html). */
+.prose-spice {
+  color: rgba(26, 10, 8, 0.78);
+  line-height: 1.75;
+}
+.prose-spice > :first-child {
+  margin-top: 0;
+}
+.prose-spice h1,
+.prose-spice h2,
+.prose-spice h3,
+.prose-spice h4 {
+  font-family: var(--font-display), Georgia, serif;
+  color: var(--color-maroon);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.prose-spice h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 2.5rem 0 1rem;
+}
+.prose-spice h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 2.25rem 0 0.85rem;
+}
+.prose-spice h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 1.75rem 0 0.6rem;
+}
+.prose-spice p {
+  margin: 1rem 0;
+}
+.prose-spice strong {
+  color: var(--color-maroon);
+  font-weight: 600;
+}
+.prose-spice a {
+  color: var(--color-chilli);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-spice a:hover {
+  color: var(--color-chilli-deep);
+}
+.prose-spice ul,
+.prose-spice ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+.prose-spice ul {
+  list-style: disc;
+}
+.prose-spice ol {
+  list-style: decimal;
+}
+.prose-spice li {
+  margin: 0.4rem 0;
+}
+.prose-spice li::marker {
+  color: var(--color-chilli);
+}
+.prose-spice blockquote {
+  border-left: 3px solid var(--color-turmeric);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: rgba(26, 10, 8, 0.65);
+}
+.prose-spice img {
+  border-radius: 1rem;
+  margin: 1.5rem 0;
+}
+.prose-spice hr {
+  border: 0;
+  border-top: 1px solid rgba(74, 10, 16, 0.15);
+  margin: 2rem 0;
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import { storefront } from "@/lib/storekit-client";
 
 const links = [
   { href: "/", label: "Home" },
@@ -16,6 +17,7 @@ const links = [
 
 export function Nav() {
   const pathname = usePathname();
+  const { count } = storefront.useCart();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -67,9 +69,7 @@ export function Nav() {
                 key={l.href}
                 href={l.href}
                 className={`relative rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                  active
-                    ? "text-turmeric"
-                    : "text-cream/85 hover:text-turmeric"
+                  active ? "text-turmeric" : "text-cream/85 hover:text-turmeric"
                 }`}
               >
                 {l.label}
@@ -93,7 +93,7 @@ export function Nav() {
             <CartIcon />
             <span className="hidden sm:inline">Cart</span>
             <span className="rounded-full bg-maroon px-1.5 py-0.5 text-[10px] font-bold text-turmeric">
-              0
+              {count}
             </span>
           </Link>
           <button

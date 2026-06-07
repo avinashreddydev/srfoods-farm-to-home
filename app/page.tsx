@@ -2,13 +2,15 @@ import Link from "next/link";
 import { Hero } from "./components/Hero";
 import { ProductCard } from "./components/ProductCard";
 import { SectionHeading } from "./components/Section";
-import { products } from "./lib/products";
+import { getBestSellers } from "./lib/storefront";
 import { CollectionCards } from "./components/CollectionCards";
 import { WhyUs } from "./components/WhyUs";
 import { Testimonials } from "./components/Testimonials";
 import { BrandStory } from "./components/BrandStory";
 
-export default function Home() {
+export default async function Home() {
+  const bestSellers = await getBestSellers(6);
+
   return (
     <>
       <Hero />
@@ -17,7 +19,11 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 md:px-8">
           <SectionHeading
             eyebrow="Our Collections"
-            title={<>Two Worlds of <span className="text-chilli">Flavour</span></>}
+            title={
+              <>
+                Two Worlds of <span className="text-chilli">Flavour</span>
+              </>
+            }
             subtitle="From slow-cured pickles to stone-ground karam — explore the bold tastes of Andhra."
           />
           <div className="mt-12">
@@ -32,14 +38,24 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 md:px-8">
           <SectionHeading
             eyebrow="Best Sellers"
-            title={<>Loved Across <span className="text-chilli">Andhra Homes</span></>}
+            title={
+              <>
+                Loved Across <span className="text-chilli">Andhra Homes</span>
+              </>
+            }
             subtitle="Hand-picked favourites our regulars keep coming back for."
           />
-          <div className="mt-12 grid grid-cols-2 gap-5 md:grid-cols-3">
-            {products.slice(0, 6).map((p, i) => (
-              <ProductCard key={p.slug} product={p} index={i} />
-            ))}
-          </div>
+          {bestSellers.length > 0 ? (
+            <div className="mt-12 grid grid-cols-2 gap-5 md:grid-cols-3">
+              {bestSellers.map((p, i) => (
+                <ProductCard key={p.id} product={p} index={i} />
+              ))}
+            </div>
+          ) : (
+            <p className="mt-12 text-center text-charcoal/60">
+              Our shelves are being restocked. Please check back shortly.
+            </p>
+          )}
           <div className="mt-12 flex flex-wrap justify-center gap-4">
             <Link
               href="/pickles"

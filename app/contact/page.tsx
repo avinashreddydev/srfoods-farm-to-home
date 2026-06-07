@@ -10,7 +10,11 @@ export default function ContactPage() {
     <>
       <PageBanner
         eyebrow="Say Hello"
-        title={<>Talk to <span className="text-turmeric">us</span></>}
+        title={
+          <>
+            Talk to <span className="text-turmeric">us</span>
+          </>
+        }
         telugu="మాతో మాట్లాడండి"
         subtitle="Bulk orders, recipe questions, partnerships — we read every message."
       />
@@ -47,7 +51,11 @@ export default function ContactPage() {
             <InfoCard
               icon="📍"
               title="Visit us"
-              lines={["SR Foods – Farm to Home", "Brodipet, Guntur", "Andhra Pradesh, India 522002"]}
+              lines={[
+                "SR Foods – Farm to Home",
+                "Brodipet, Guntur",
+                "Andhra Pradesh, India 522002",
+              ]}
             />
             <InfoCard
               icon="📞"

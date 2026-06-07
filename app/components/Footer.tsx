@@ -1,10 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getPages } from "../lib/storefront";
 
-export function Footer() {
+// CMS pages that already have a bespoke top-level route — link those instead of
+// the generic /pages/<slug> renderer.
+const CANONICAL_HREF: Record<string, string> = {
+  about: "/about",
+  contact: "/contact",
+};
+
+function pageHref(slug: string): string {
+  return CANONICAL_HREF[slug] ?? `/pages/${slug}`;
+}
+
+export async function Footer() {
+  const pages = await getPages();
+
   return (
     <footer className="mt-24 bg-charcoal text-cream/80">
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-4 md:px-8">
+      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 sm:grid-cols-2 lg:grid-cols-5 md:px-8">
         <div>
           <div className="flex items-center gap-3">
             <div className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-turmeric/70">
@@ -42,6 +56,26 @@ export function Footer() {
             </li>
           </ul>
         </div>
+
+        {pages.length > 0 && (
+          <div>
+            <h4 className="mb-3 font-display text-sm uppercase tracking-widest text-turmeric">
+              Information
+            </h4>
+            <ul className="space-y-2 text-sm">
+              {pages.map((page) => (
+                <li key={page.id}>
+                  <Link
+                    href={pageHref(page.slug)}
+                    className="hover:text-turmeric"
+                  >
+                    {page.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div>
           <h4 className="mb-3 font-display text-sm uppercase tracking-widest text-turmeric">
@@ -89,7 +123,9 @@ export function Footer() {
       </div>
       <div className="border-t border-cream/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-6 py-5 text-xs text-cream/50 md:flex-row md:px-8">
-          <span>© {new Date().getFullYear()} SR Foods. All rights reserved.</span>
+          <span>
+            © {new Date().getFullYear()} SR Foods. All rights reserved.
+          </span>
           <span>Crafted with fire in Andhra Pradesh.</span>
         </div>
       </div>

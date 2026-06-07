@@ -20,7 +20,9 @@ export function SectionHeading({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5 }}
-      className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}
+      className={
+        align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"
+      }
     >
       {eyebrow && (
         <div
