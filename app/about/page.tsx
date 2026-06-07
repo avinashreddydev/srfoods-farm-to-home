@@ -4,15 +4,36 @@ import { WhyUs } from "../components/WhyUs";
 
 export const metadata = {
   title: "About · SR Foods",
-  description: "The story behind SR Foods — Farm to Home Andhra pickles & karam.",
+  description:
+    "The story behind SR Foods — Farm to Home Andhra pickles & karam.",
 };
 
 const steps = [
-  { n: "01", t: "Sourced", d: "Sun-ripened Guntur chillies and farm-fresh raw mangoes from trusted growers." },
-  { n: "02", t: "Sun-Dried", d: "Spread out and dried under Andhra sun until aromatic and crisp." },
-  { n: "03", t: "Stone-Ground", d: "Pounded the slow way to keep oils and fragrance intact." },
-  { n: "04", t: "Slow-Cured", d: "Pickles rest in earthen jars for weeks until the flavours marry." },
-  { n: "05", t: "Sealed Fresh", d: "Hand-packed in tamper-proof jars, sealed for the journey home." },
+  {
+    n: "01",
+    t: "Sourced",
+    d: "Sun-ripened Guntur chillies and farm-fresh raw mangoes from trusted growers.",
+  },
+  {
+    n: "02",
+    t: "Sun-Dried",
+    d: "Spread out and dried under Andhra sun until aromatic and crisp.",
+  },
+  {
+    n: "03",
+    t: "Stone-Ground",
+    d: "Pounded the slow way to keep oils and fragrance intact.",
+  },
+  {
+    n: "04",
+    t: "Slow-Cured",
+    d: "Pickles rest in earthen jars for weeks until the flavours marry.",
+  },
+  {
+    n: "05",
+    t: "Sealed Fresh",
+    d: "Hand-packed in tamper-proof jars, sealed for the journey home.",
+  },
 ];
 
 export default function AboutPage() {
@@ -20,7 +41,11 @@ export default function AboutPage() {
     <>
       <PageBanner
         eyebrow="Who We Are"
-        title={<>Farm to <span className="text-turmeric">Home</span></>}
+        title={
+          <>
+            Farm to <span className="text-turmeric">Home</span>
+          </>
+        }
         telugu="మన వంటకాలు · మన మూలాలు"
         subtitle="A family that grew up in Guntur's chilli fields, sharing the spices and pickles of our home with yours."
       />

@@ -6,7 +6,8 @@ import { motion } from "motion/react";
 export function BrandStory() {
   return (
     <section className="relative overflow-hidden bg-maroon text-cream py-20 md:py-28">
-      <div className="absolute inset-0 opacity-20"
+      <div
+        className="absolute inset-0 opacity-20"
         style={{
           backgroundImage:
             "radial-gradient(circle at 80% 20%, rgba(232,178,42,0.5), transparent 40%)",
@@ -58,7 +59,8 @@ export function BrandStory() {
             </span>
           </div>
           <h2 className="font-display mt-4 text-4xl font-black leading-tight md:text-5xl">
-            Andhra heritage,<br />
+            Andhra heritage,
+            <br />
             in every <span className="text-turmeric">spoonful</span>.
           </h2>
           <p className="mt-6 text-cream/80 leading-relaxed">

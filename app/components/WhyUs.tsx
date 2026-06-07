@@ -4,12 +4,36 @@ import { motion } from "motion/react";
 import { SectionHeading } from "./Section";
 
 const features = [
-  { icon: "🌶️", title: "Authentic Recipes", desc: "Traditional Andhra recipes passed down through generations." },
-  { icon: "🌾", title: "Farm-Fresh Ingredients", desc: "Sourced directly from our trusted Guntur farmers." },
-  { icon: "🫙", title: "Handmade Taste", desc: "Stone-ground, hand-pounded, slow-cured in small batches." },
-  { icon: "✨", title: "Hygienic Preparation", desc: "Modern food-safe kitchens, traditional cooking methods." },
-  { icon: "🔥", title: "Rich Regional Flavour", desc: "Bold, fiery, unmistakably Andhra — no compromises." },
-  { icon: "🚚", title: "Doorstep Delivery", desc: "Sealed for freshness, shipped pan-India in 3–5 days." },
+  {
+    icon: "🌶️",
+    title: "Authentic Recipes",
+    desc: "Traditional Andhra recipes passed down through generations.",
+  },
+  {
+    icon: "🌾",
+    title: "Farm-Fresh Ingredients",
+    desc: "Sourced directly from our trusted Guntur farmers.",
+  },
+  {
+    icon: "🫙",
+    title: "Handmade Taste",
+    desc: "Stone-ground, hand-pounded, slow-cured in small batches.",
+  },
+  {
+    icon: "✨",
+    title: "Hygienic Preparation",
+    desc: "Modern food-safe kitchens, traditional cooking methods.",
+  },
+  {
+    icon: "🔥",
+    title: "Rich Regional Flavour",
+    desc: "Bold, fiery, unmistakably Andhra — no compromises.",
+  },
+  {
+    icon: "🚚",
+    title: "Doorstep Delivery",
+    desc: "Sealed for freshness, shipped pan-India in 3–5 days.",
+  },
 ];
 
 export function WhyUs() {
@@ -18,7 +42,12 @@ export function WhyUs() {
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         <SectionHeading
           eyebrow="Why SR Foods"
-          title={<>Crafted with <span className="text-chilli">Care</span>, Loved for Flavour</>}
+          title={
+            <>
+              Crafted with <span className="text-chilli">Care</span>, Loved for
+              Flavour
+            </>
+          }
           subtitle="Every jar carries the soul of Andhra cooking — and our promise of quality."
         />
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
