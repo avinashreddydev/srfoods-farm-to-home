@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getPages } from "../lib/storefront";
+import { getPages, getStoreContact } from "../lib/storefront";
 
 // CMS pages that already have a bespoke top-level route — link those instead of
 // the generic /pages/<slug> renderer.
@@ -14,7 +14,7 @@ function pageHref(slug: string): string {
 }
 
 export async function Footer() {
-  const pages = await getPages();
+  const [pages, contact] = await Promise.all([getPages(), getStoreContact()]);
 
   return (
     <footer className="bg-charcoal text-cream/80">
@@ -82,8 +82,8 @@ export async function Footer() {
             Contact
           </h4>
           <ul className="space-y-2 text-sm">
-            <li>Guntur, Andhra Pradesh</li>
-            <li>+91 98765 43210</li>
+            <li>{contact.shortAddress}</li>
+            <li>{contact.phone}</li>
             <li>hello@srfoods.in</li>
           </ul>
           <div className="mt-4 flex gap-3">

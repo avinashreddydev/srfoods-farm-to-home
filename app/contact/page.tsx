@@ -1,11 +1,13 @@
 import { PageBanner } from "../components/PageBanner";
+import { getStoreContact } from "../lib/storefront";
 
 export const metadata = {
   title: "Contact · SR Foods",
   description: "Get in touch with SR Foods — Farm to Home.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const contact = await getStoreContact();
   return (
     <>
       <PageBanner
@@ -48,19 +50,11 @@ export default function ContactPage() {
           </form>
 
           <div className="space-y-5">
-            <InfoCard
-              icon="📍"
-              title="Visit us"
-              lines={[
-                "SR Foods – Farm to Home",
-                "Brodipet, Guntur",
-                "Andhra Pradesh, India 522002",
-              ]}
-            />
+            <InfoCard icon="📍" title="Visit us" lines={contact.addressLines} />
             <InfoCard
               icon="📞"
               title="Call"
-              lines={["+91 98765 43210", "Mon–Sat · 9am to 7pm"]}
+              lines={[contact.phone, "Mon–Sat · 9am to 7pm"]}
             />
             <InfoCard
               icon="✉️"

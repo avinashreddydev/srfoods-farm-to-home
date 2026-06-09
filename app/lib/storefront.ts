@@ -1,5 +1,10 @@
 import "server-only";
-import type { Category, Page as SKPage, Product } from "@usestorekit/sdk/next";
+import type {
+  Category,
+  Product,
+  Page as SKPage,
+  Store,
+} from "@usestorekit/sdk/next";
 import { cache } from "react";
 import { storekit } from "@/lib/storekit";
 import type { StorePage, StorePageSummary } from "./types";
@@ -137,3 +142,69 @@ export const getPage = cache(
     return mapPage(data);
   },
 );
+
+/** The live store (currency, pickup address, hours, …), or null. */
+export const getStore = cache(async (): Promise<Store | null> => {
+  const { data, error } = await storekit.store.get();
+  if (error || !data) return null;
+  return data;
+});
+
+/** Contact details for the footer/contact page. */
+export type StoreContact = {
+  /** Full multi-line postal address (contact page). */
+  addressLines: string[];
+  /** Compact "City, State" line (footer). */
+  shortAddress: string;
+  /** Primary contact phone. */
+  phone: string;
+};
+
+// Curated copy used when the store hasn't published the field (or in local dev
+// where the store API isn't reachable), so contact details are never blank.
+const FALLBACK_CONTACT: StoreContact = {
+  addressLines: [
+    "SR Foods – Farm to Home",
+    "Brodipet, Guntur",
+    "Andhra Pradesh, India 522002",
+  ],
+  shortAddress: "Guntur, Andhra Pradesh",
+  phone: "+91 98765 43210",
+};
+
+/**
+ * Footer/contact details, sourced from the store's pickup address with the
+ * curated copy above as a per-field fallback. `pickupAddress` is a free-form
+ * blob, so we read the keys Storekit sets and ignore the rest.
+ */
+export const getStoreContact = cache(async (): Promise<StoreContact> => {
+  const addr = (await getStore())?.pickupAddress as {
+    address?: string;
+    city?: string;
+    state?: string;
+    pincode?: string;
+    contactNumber?: string;
+  } | null;
+  if (!addr) return FALLBACK_CONTACT;
+
+  const city = addr.city?.trim();
+  const state = addr.state?.trim();
+  const region = [city, state].filter(Boolean).join(", ");
+  const cityLine = [region, addr.pincode?.trim()].filter(Boolean).join(" ");
+  const addressLines = [
+    "SR Foods – Farm to Home",
+    addr.address?.trim(),
+    cityLine,
+  ].filter((l): l is string => Boolean(l));
+  // contactNumber can arrive wrapped in Unicode bidi/format marks — strip them.
+  const phone = addr.contactNumber
+    ?.replace(/[\u200e\u200f\u202a-\u202e]/g, "")
+    .trim();
+
+  return {
+    addressLines:
+      addressLines.length > 1 ? addressLines : FALLBACK_CONTACT.addressLines,
+    shortAddress: region || FALLBACK_CONTACT.shortAddress,
+    phone: phone || FALLBACK_CONTACT.phone,
+  };
+});
