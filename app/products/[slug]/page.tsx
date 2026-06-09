@@ -45,7 +45,7 @@ export default async function ProductPage({
             {product.category && (
               <>
                 <Link
-                  href={`/${product.category}`}
+                  href={`/category/${product.category}`}
                   className="capitalize hover:text-chilli"
                 >
                   {product.categoryName ?? product.category}

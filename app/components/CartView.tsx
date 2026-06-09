@@ -202,7 +202,7 @@ export function CartView() {
           Proceed to checkout →
         </Link>
         <Link
-          href="/pickles"
+          href="/category/pickles"
           className="mt-3 flex justify-center text-xs font-semibold uppercase tracking-wider text-charcoal/50 hover:text-chilli"
         >
           Continue shopping
@@ -236,13 +236,13 @@ function EmptyCart() {
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link
-          href="/pickles"
+          href="/category/pickles"
           className="btn-primary rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"
         >
           Shop Pickles →
         </Link>
         <Link
-          href="/karam"
+          href="/category/karam"
           className="rounded-full border-2 border-maroon px-7 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream"
         >
           Shop Karam

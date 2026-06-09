@@ -60,18 +60,19 @@ export default async function Home() {
             </p>
           )}
           <div className="mt-12 flex flex-wrap justify-center gap-4">
-            <Link
-              href="/pickles"
-              className="btn-primary inline-flex rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"
-            >
-              View All Pickles
-            </Link>
-            <Link
-              href="/karam"
-              className="rounded-full border-2 border-maroon px-7 py-3 text-sm font-bold uppercase tracking-wider text-maroon hover:bg-maroon hover:text-cream transition-colors"
-            >
-              View All Karam
-            </Link>
+            {collections.map((c, i) => (
+              <Link
+                key={c.id}
+                href={`/category/${c.slug}`}
+                className={
+                  i === 0
+                    ? "btn-primary inline-flex rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"
+                    : "rounded-full border-2 border-maroon px-7 py-3 text-sm font-bold uppercase tracking-wider text-maroon hover:bg-maroon hover:text-cream transition-colors"
+                }
+              >
+                View All {c.name}
+              </Link>
+            ))}
           </div>
         </div>
       </section>

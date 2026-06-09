@@ -40,12 +40,12 @@ export async function Footer() {
           </h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="/pickles" className="hover:text-turmeric">
+              <Link href="/category/pickles" className="hover:text-turmeric">
                 Pickles
               </Link>
             </li>
             <li>
-              <Link href="/karam" className="hover:text-turmeric">
+              <Link href="/category/karam" className="hover:text-turmeric">
                 Karam Powders
               </Link>
             </li>

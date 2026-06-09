@@ -27,10 +27,10 @@ export default function NotFound() {
       <Link href="/" className={`btn-primary ${linkBase}`}>
         Back Home <span>→</span>
       </Link>
-      <Link href="/pickles" className={`btn-outline ${linkBase}`}>
+      <Link href="/category/pickles" className={`btn-outline ${linkBase}`}>
         Shop Pickles
       </Link>
-      <Link href="/karam" className={`btn-outline ${linkBase}`}>
+      <Link href="/category/karam" className={`btn-outline ${linkBase}`}>
         Shop Karam
       </Link>
     </ErrorScreen>

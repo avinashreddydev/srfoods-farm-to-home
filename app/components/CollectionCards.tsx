@@ -32,7 +32,7 @@ export function CollectionCards({
             transition={{ duration: 0.6, delay: i * 0.1 }}
           >
             <Link
-              href={`/${c.slug}`}
+              href={`/category/${c.slug}`}
               className="group relative block overflow-hidden rounded-[2rem] bg-charcoal text-cream"
             >
               <div className="relative aspect-[4/5] md:aspect-[5/4]">

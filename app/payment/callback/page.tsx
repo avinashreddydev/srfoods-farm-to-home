@@ -42,7 +42,7 @@ function Result() {
             Back home
           </Link>
           <Link
-            href="/pickles"
+            href="/category/pickles"
             className="rounded-full border-2 border-maroon px-7 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream"
           >
             Keep shopping

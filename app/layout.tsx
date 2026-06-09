@@ -27,7 +27,7 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const collections = await getCollections(2);
   const categoryLinks = collections.map((c) => ({
-    href: `/${c.slug}`,
+    href: `/category/${c.slug}`,
     label: c.name,
   }));
 

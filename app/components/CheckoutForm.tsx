@@ -33,7 +33,7 @@ export function CheckoutForm() {
           Add a jar or two before heading to checkout.
         </p>
         <Link
-          href="/pickles"
+          href="/category/pickles"
           className="btn-primary mt-6 inline-flex rounded-full px-6 py-3 text-sm font-bold uppercase tracking-wider"
         >
           Shop Pickles →

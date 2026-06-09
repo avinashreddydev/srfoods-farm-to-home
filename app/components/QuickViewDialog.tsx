@@ -225,7 +225,7 @@ function QuickViewContent({
             )}
             {product.categoryName && (
               <Link
-                href={`/${product.category}`}
+                href={`/category/${product.category}`}
                 className="rounded-full bg-maroon/5 px-2.5 py-1 font-semibold capitalize text-maroon hover:text-chilli"
               >
                 {product.categoryName}

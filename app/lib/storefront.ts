@@ -99,6 +99,15 @@ export const getCollections = cache(
   },
 );
 
+/** A single category by slug for the /category/[slug] route, or null. */
+export const getCategory = cache(
+  async (slug: string): Promise<StoreCategory | null> => {
+    const cats = await getCategories();
+    const match = cats.find((c) => c.slug === slug);
+    return match ? mapCategory(match) : null;
+  },
+);
+
 function mapVariant(v: SKProduct["variants"][number]): StoreVariant {
   const attributes = (v.attributes ?? {}) as Record<string, string>;
   return {

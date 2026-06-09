@@ -59,13 +59,13 @@ export function Hero() {
             className="mt-8 flex flex-wrap gap-4"
           >
             <Link
-              href="/pickles"
+              href="/category/pickles"
               className="btn-primary inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold uppercase tracking-wider"
             >
               Shop Pickles <span>→</span>
             </Link>
             <Link
-              href="/karam"
+              href="/category/karam"
               className="btn-outline inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold uppercase tracking-wider"
             >
               Shop Karam
