@@ -1,43 +1,14 @@
-// UI view-model types for the storefront. Pure types only (no runtime, no
+// View-model types for the storefront. Pure types only (no runtime, no
 // "server-only") so both Server and Client Components can import them.
 //
-// These are mapped from Storekit's API types in app/lib/storefront.ts. The
-// brand-specific fields (telugu, heat, weight) are read from a Storekit product
-// variant's `attributes` map — that's where we store them in the dashboard,
-// since the core product model has no free-form metadata field.
-
-/**
- * A top-level product category surfaced as a collection in the nav and on the
- * homepage. Mapped from Storekit's `categories` resource in
- * app/lib/storefront.ts. SDK 0.4.0 enriched categories with `imageUrl`,
- * `description`, `position` and `totalActiveProducts`, which is what lets us
- * render image-driven collection cards straight from the API.
- */
-export type StoreCategory = {
-  id: string;
-  slug: string;
-  name: string;
-  /** Telugu name, from category attribute `telugu`. */
-  telugu: string | null;
-  description: string | null;
-  /** Category image served by Storekit (null if none set). */
-  image: string | null;
-  /** Sort order from the dashboard. */
-  position: number;
-  /** Active product count, when the API includes it. */
-  productCount: number | null;
-};
-
-export type StoreVariant = {
-  id: string;
-  name: string;
-  price: number;
-  compareAtPrice: number | null;
-  sku: string;
-  inventoryQty: number;
-  weight: string | null;
-  attributes: Record<string, string>;
-};
+// Products, variants and categories are consumed straight from Storekit's SDK
+// types (`Product`, `ProductVariant`, `Category` from "@usestorekit/sdk").
+// Product-level brand fields (telugu, heat) are read from the product's own
+// `attributes` map; the size/weight label is per-variant, read from each
+// variant's `attributes`. See app/lib/product.ts for the heat helper.
+//
+// Pages keep a view-model because their body must be extracted from Storekit's
+// free-form `content` blob into rendered HTML (see app/lib/storefront.ts).
 
 // A Storekit CMS content page (e.g. FAQ, Shipping & Returns, Privacy Policy).
 // Mapped from the SDK's `pages` resource in app/lib/storefront.ts.
@@ -61,34 +32,4 @@ export type StorePage = StorePageSummary & {
   html: string;
   /** Raw, free-form content blob as returned by Storekit. */
   content: Record<string, unknown>;
-};
-
-export type StoreProduct = {
-  id: string;
-  slug: string;
-  name: string;
-  /** Telugu name, from variant attribute `telugu`. */
-  telugu: string | null;
-  description: string;
-  categoryId: string;
-  /** Resolved category slug, e.g. "pickles" | "karam". */
-  category: string | null;
-  categoryName: string | null;
-  /** 0–5, from variant attribute `heat`. */
-  heat: number;
-  /** e.g. "500 g", from variant attribute `weight` (falls back to variant name). */
-  weight: string | null;
-  /** Primary image URL served by Storekit (null if the product has none). */
-  image: string | null;
-  images: string[];
-  /** Default (first) variant price, in major currency units. */
-  price: number;
-  compareAtPrice: number | null;
-  currency: string;
-  /** Default variant id — what add-to-cart sends. */
-  variantId: string;
-  variants: StoreVariant[];
-  isAvailable: boolean;
-  isBestseller: boolean;
-  isFeatured: boolean;
 };

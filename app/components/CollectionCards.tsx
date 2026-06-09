@@ -2,24 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import type { Category } from "@usestorekit/sdk";
 import { motion } from "motion/react";
-import type { StoreCategory } from "../lib/types";
 
 // Accent gradients and image fallbacks aren't part of the category data in
 // Storekit, so we keep a small brand palette here and index into it per card.
 const ACCENTS = ["from-chilli to-maroon", "from-ember to-chilli-deep"];
 const FALLBACK_IMAGES = ["/mango-pickle.png", "/plain-mirchi-karam.png"];
 
-export function CollectionCards({
-  collections,
-}: {
-  collections: StoreCategory[];
-}) {
+export function CollectionCards({ collections }: { collections: Category[] }) {
   return (
     <div className="grid gap-6 md:grid-cols-2 md:gap-8">
       {collections.map((c, i) => {
-        const image = c.image ?? FALLBACK_IMAGES[i % FALLBACK_IMAGES.length];
+        const image = c.imageUrl ?? FALLBACK_IMAGES[i % FALLBACK_IMAGES.length];
         const accent = ACCENTS[i % ACCENTS.length];
+        const telugu = c.attributes?.telugu ?? c.attributes?.te;
         const desc =
           c.description ??
           `Explore our handcrafted ${c.name.toLowerCase()} collection.`;
@@ -50,9 +47,9 @@ export function CollectionCards({
               </div>
 
               <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10">
-                {c.telugu && (
+                {telugu && (
                   <span className="font-display text-sm italic text-turmeric">
-                    {c.telugu}
+                    {telugu}
                   </span>
                 )}
                 <h3 className="font-display text-4xl font-black md:text-6xl">

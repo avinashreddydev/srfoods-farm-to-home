@@ -4,9 +4,10 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import type { Product } from "@usestorekit/sdk";
 import { formatMoney } from "../lib/format";
 import { stripHtml } from "../lib/html";
-import type { StoreProduct } from "../lib/types";
+import { productHeat } from "../lib/product";
 import { useProductPurchase } from "../lib/use-product-purchase";
 import { QuickViewDialog } from "./QuickViewDialog";
 
@@ -14,11 +15,15 @@ export function ProductCard({
   product,
   index = 0,
 }: {
-  product: StoreProduct;
+  product: Product;
   index?: number;
 }) {
   const p = useProductPurchase(product);
   const [quickOpen, setQuickOpen] = useState(false);
+  const heat = productHeat(product);
+  const attrs = product?.attributes;
+  const telugu = attrs?.telugu ?? attrs?.te;
+  const image = product.images[0];
 
   const addLabel = p.soldOut ? "Sold out" : p.error ? "Try again" : "Add";
 
@@ -37,9 +42,9 @@ export function ProductCard({
           className="absolute inset-0 block"
           aria-label={product.name}
         >
-          {product.image ? (
+          {image ? (
             <Image
-              src={product.image}
+              src={image}
               alt={product.name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -64,9 +69,9 @@ export function ProductCard({
               ★ Bestseller
             </span>
           )}
-          {product.heat > 0 && (
+          {heat > 0 && (
             <span className="flex items-center gap-1 rounded-full bg-maroon/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-cream backdrop-blur">
-              <Flame /> {"🌶️".repeat(product.heat)}
+              <Flame /> {"🌶️".repeat(heat)}
             </span>
           )}
         </div>
@@ -90,9 +95,9 @@ export function ProductCard({
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        {product.telugu && (
+        {telugu && (
           <span className="font-display text-xs italic text-chilli">
-            {product.telugu}
+            {telugu}
           </span>
         )}
         <Link href={`/products/${product.slug}`}>
@@ -108,11 +113,11 @@ export function ProductCard({
 
         <div className="mt-4 flex items-baseline gap-2">
           <span className="font-display text-xl font-bold text-maroon">
-            {formatMoney(p.price, product.currency)}
+            {formatMoney(p.price, p.currency)}
           </span>
           {p.compareAt && p.compareAt > p.price && (
             <span className="text-xs text-charcoal/40 line-through">
-              {formatMoney(p.compareAt, product.currency)}
+              {formatMoney(p.compareAt, p.currency)}
             </span>
           )}
           {p.weight && (
@@ -134,13 +139,12 @@ export function ProductCard({
                   type="button"
                   disabled={vSoldOut}
                   onClick={() => p.setVariantId(v.id)}
-                  className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:cursor-not-allowed disabled:line-through disabled:opacity-40 ${
-                    active
-                      ? "border-chilli bg-chilli text-cream"
-                      : "border-maroon/20 text-maroon hover:border-chilli"
-                  }`}
+                  className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:cursor-not-allowed disabled:line-through disabled:opacity-40 ${active
+                    ? "border-chilli bg-chilli text-cream"
+                    : "border-maroon/20 text-maroon hover:border-chilli"
+                    }`}
                 >
-                  {v.weight ?? v.name}
+                  {v.attributes.weight ?? v.attributes.size ?? v.name}
                 </button>
               );
             })}

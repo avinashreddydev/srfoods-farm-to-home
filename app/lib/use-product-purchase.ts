@@ -4,18 +4,20 @@
 // QuickViewDialog. The stepper tracks how many of the selected variant are in
 // the cart, so the UI shows "Add" until the first unit, then a quantity control.
 
+import type { Product, ProductVariant } from "@usestorekit/sdk";
 import { useMemo, useState } from "react";
 import { storefront } from "@/lib/storekit-client";
-import type { StoreProduct, StoreVariant } from "./types";
 
 export type ProductPurchase = {
-  variants: StoreVariant[];
-  selected: StoreVariant | undefined;
+  variants: ProductVariant[];
+  selected: ProductVariant | undefined;
   variantId: string;
   setVariantId: (id: string) => void;
   price: number;
   compareAt: number | null;
   weight: string | null;
+  /** Store currency (from the live store), e.g. "INR". */
+  currency: string;
   /** Whole-number percent off vs. compare-at price. */
   discountPct: number;
   /** Remaining stock for the selected variant. */
@@ -36,12 +38,14 @@ export type ProductPurchase = {
 };
 
 export function useProductPurchase(
-  product: StoreProduct,
+  product: Product,
   initialVariantId?: string,
 ): ProductPurchase {
   const { cart, add, setQuantity, remove } = storefront.useCart();
+  const { data: store } = storefront.useStore();
+  const currency = store?.currency ?? "INR";
   const [variantId, setVariantId] = useState(
-    initialVariantId ?? product.variantId,
+    initialVariantId ?? product.variants[0]?.id ?? "",
   );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
@@ -52,9 +56,15 @@ export function useProductPurchase(
     [product.variants, variantId],
   );
 
-  const price = selected?.price ?? product.price;
-  const compareAt = selected?.compareAtPrice ?? null;
-  const weight = selected?.weight ?? product.weight;
+  const price = Number(selected?.price) || 0;
+  const compareAt = selected?.compareAtPrice
+    ? Number(selected.compareAtPrice)
+    : null;
+  const weight =
+    selected?.attributes.weight ??
+    selected?.attributes.size ??
+    selected?.name ??
+    null;
   const inventory = selected?.inventoryQty ?? 0;
   const discountPct =
     compareAt && compareAt > price
@@ -104,6 +114,7 @@ export function useProductPurchase(
     price,
     compareAt,
     weight,
+    currency,
     discountPct,
     inventory,
     soldOut,

@@ -3,13 +3,15 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "motion/react";
+import type { Product } from "@usestorekit/sdk";
 import { storefront } from "@/lib/storekit-client";
 import { formatMoney } from "../lib/format";
-import type { StoreProduct } from "../lib/types";
 
-export function AddToCartPanel({ product }: { product: StoreProduct }) {
+export function AddToCartPanel({ product }: { product: Product }) {
   const { add } = storefront.useCart();
-  const [variantId, setVariantId] = useState(product.variantId);
+  const { data: store } = storefront.useStore();
+  const currency = store?.currency ?? "INR";
+  const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
   const [qty, setQty] = useState(1);
   const [state, setState] = useState<"idle" | "adding" | "added" | "error">(
     "idle",
@@ -17,8 +19,10 @@ export function AddToCartPanel({ product }: { product: StoreProduct }) {
 
   const selected =
     product.variants.find((v) => v.id === variantId) ?? product.variants[0];
-  const price = selected?.price ?? product.price;
-  const compareAt = selected?.compareAtPrice ?? null;
+  const price = Number(selected?.price) || 0;
+  const compareAt = selected?.compareAtPrice
+    ? Number(selected.compareAtPrice)
+    : null;
   const soldOut =
     !product.isAvailable || !selected || selected.inventoryQty <= 0;
 
@@ -34,11 +38,11 @@ export function AddToCartPanel({ product }: { product: StoreProduct }) {
     <div>
       <div className="flex items-baseline gap-3">
         <span className="font-display text-3xl font-bold text-maroon">
-          {formatMoney(price, product.currency)}
+          {formatMoney(price, currency)}
         </span>
         {compareAt && compareAt > price && (
           <span className="text-lg text-charcoal/40 line-through">
-            {formatMoney(compareAt, product.currency)}
+            {formatMoney(compareAt, currency)}
           </span>
         )}
       </div>
@@ -64,7 +68,7 @@ export function AddToCartPanel({ product }: { product: StoreProduct }) {
                       : "border-maroon/20 text-maroon hover:border-chilli"
                   }`}
                 >
-                  {v.weight ?? v.name}
+                  {v.attributes.weight ?? v.attributes.size ?? v.name}
                 </button>
               );
             })}

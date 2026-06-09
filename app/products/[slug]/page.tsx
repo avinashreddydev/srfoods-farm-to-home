@@ -4,7 +4,12 @@ import { notFound } from "next/navigation";
 import { AddToCartPanel } from "../../components/AddToCartPanel";
 import { ProductCard } from "../../components/ProductCard";
 import { SectionHeading } from "../../components/Section";
-import { getProduct, getRelatedProducts } from "../../lib/storefront";
+import { productHeat } from "../../lib/product";
+import {
+  getCategoryMap,
+  getProduct,
+  getRelatedProducts,
+} from "../../lib/storefront";
 
 export async function generateMetadata({
   params,
@@ -26,11 +31,23 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const [product, categoryMap] = await Promise.all([
+    getProduct(slug),
+    getCategoryMap(),
+  ]);
   if (!product) notFound();
 
-  const related = product.category
-    ? await getRelatedProducts(product.category, product.slug, 3)
+  const category = categoryMap.get(product.categoryId) ?? null;
+  const heat = productHeat(product);
+  const telugu = product.attributes.telugu ?? product.attributes.te;
+  const variant = product.variants[0];
+  const weight =
+    variant?.attributes.weight ??
+    variant?.attributes.size ??
+    variant?.name ??
+    null;
+  const related = category
+    ? await getRelatedProducts(category.slug, product.slug, 3)
     : [];
 
   return (
@@ -42,13 +59,13 @@ export default async function ProductPage({
               Home
             </Link>
             <span>/</span>
-            {product.category && (
+            {category && (
               <>
                 <Link
-                  href={`/category/${product.category}`}
+                  href={`/category/${category.slug}`}
                   className="capitalize hover:text-chilli"
                 >
-                  {product.categoryName ?? product.category}
+                  {category.name}
                 </Link>
                 <span>/</span>
               </>
@@ -60,13 +77,13 @@ export default async function ProductPage({
             <ProductGallery
               images={product.images}
               name={product.name}
-              heat={product.heat}
+              heat={heat}
             />
 
             <div className="flex flex-col">
-              {product.telugu && (
+              {telugu && (
                 <span className="font-display text-lg italic text-chilli">
-                  {product.telugu}
+                  {telugu}
                 </span>
               )}
               <h1 className="font-display text-4xl font-black leading-tight text-maroon md:text-5xl">
@@ -74,14 +91,14 @@ export default async function ProductPage({
               </h1>
 
               <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
-                {product.heat > 0 && (
+                {heat > 0 && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-maroon/5 px-3 py-1 font-semibold text-maroon">
-                    Heat {"🌶️".repeat(product.heat)}
+                    Heat {"🌶️".repeat(heat)}
                   </span>
                 )}
-                {product.weight && (
+                {weight && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-maroon/5 px-3 py-1 font-semibold text-maroon">
-                    {product.weight}
+                    {weight}
                   </span>
                 )}
                 {product.isAvailable ? (

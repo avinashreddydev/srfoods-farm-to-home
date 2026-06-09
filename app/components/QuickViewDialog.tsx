@@ -5,8 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import type { Product } from "@usestorekit/sdk";
 import { formatMoney } from "../lib/format";
-import type { StoreProduct } from "../lib/types";
+import { productHeat } from "../lib/product";
 import { useProductPurchase } from "../lib/use-product-purchase";
 
 export function QuickViewDialog({
@@ -15,7 +16,7 @@ export function QuickViewDialog({
   onClose,
   initialVariantId,
 }: {
-  product: StoreProduct;
+  product: Product;
   open: boolean;
   onClose: () => void;
   initialVariantId?: string;
@@ -44,18 +45,16 @@ function QuickViewContent({
   onClose,
   initialVariantId,
 }: {
-  product: StoreProduct;
+  product: Product;
   onClose: () => void;
   initialVariantId?: string;
 }) {
   const p = useProductPurchase(product, initialVariantId);
   const panelRef = useRef<HTMLDivElement>(null);
-  const images =
-    product.images.length > 0
-      ? product.images
-      : product.image
-        ? [product.image]
-        : [];
+  const images = product.images;
+  const heat = productHeat(product);
+  const attrs = product.attributes;
+  const telugu = attrs?.telugu ?? attrs?.te;
   const [activeImg, setActiveImg] = useState(0);
   const heroImg = images[activeImg];
 
@@ -172,9 +171,9 @@ function QuickViewContent({
                   ★ Bestseller
                 </span>
               )}
-              {product.heat > 0 && (
+              {heat > 0 && (
                 <span className="rounded-full bg-maroon/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-cream backdrop-blur">
-                  {"🌶️".repeat(product.heat)}
+                  {"🌶️".repeat(heat)}
                 </span>
               )}
             </div>
@@ -208,9 +207,9 @@ function QuickViewContent({
 
         {/* Details */}
         <div className="flex max-h-[70vh] flex-col overflow-y-auto p-6 md:max-h-[90vh] md:p-8">
-          {product.telugu && (
+          {telugu && (
             <span className="font-display text-base italic text-chilli">
-              {product.telugu}
+              {telugu}
             </span>
           )}
           <h2 className="font-display text-2xl font-black leading-tight text-maroon md:text-3xl">
@@ -218,18 +217,10 @@ function QuickViewContent({
           </h2>
 
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-            {product.heat > 0 && (
+            {heat > 0 && (
               <span className="rounded-full bg-maroon/5 px-2.5 py-1 font-semibold text-maroon">
-                Heat {"🌶️".repeat(product.heat)}
+                Heat {"🌶️".repeat(heat)}
               </span>
-            )}
-            {product.categoryName && (
-              <Link
-                href={`/category/${product.category}`}
-                className="rounded-full bg-maroon/5 px-2.5 py-1 font-semibold capitalize text-maroon hover:text-chilli"
-              >
-                {product.categoryName}
-              </Link>
             )}
             {p.soldOut ? (
               <span className="font-semibold text-charcoal/50">● Sold out</span>
@@ -244,11 +235,11 @@ function QuickViewContent({
 
           <div className="mt-4 flex items-baseline gap-3">
             <span className="font-display text-3xl font-bold text-maroon">
-              {formatMoney(p.price, product.currency)}
+              {formatMoney(p.price, p.currency)}
             </span>
             {p.compareAt && p.compareAt > p.price && (
               <span className="text-lg text-charcoal/40 line-through">
-                {formatMoney(p.compareAt, product.currency)}
+                {formatMoney(p.compareAt, p.currency)}
               </span>
             )}
           </div>
@@ -281,7 +272,7 @@ function QuickViewContent({
                           : "border-maroon/20 text-maroon hover:border-chilli"
                       }`}
                     >
-                      {v.weight ?? v.name}
+                      {v.attributes.weight ?? v.attributes.size ?? v.name}
                     </button>
                   );
                 })}
