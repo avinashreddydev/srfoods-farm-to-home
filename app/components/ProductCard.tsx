@@ -1,13 +1,14 @@
 "use client";
 
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { motion } from "motion/react";
-import { storefront } from "@/lib/storekit-client";
 import { formatMoney } from "../lib/format";
 import { stripHtml } from "../lib/html";
 import type { StoreProduct } from "../lib/types";
+import { useProductPurchase } from "../lib/use-product-purchase";
+import { QuickViewDialog } from "./QuickViewDialog";
 
 export function ProductCard({
   product,
@@ -16,23 +17,10 @@ export function ProductCard({
   product: StoreProduct;
   index?: number;
 }) {
-  const { add } = storefront.useCart();
-  const [state, setState] = useState<"idle" | "adding" | "added">("idle");
-  const soldOut = !product.isAvailable || !product.variantId;
+  const p = useProductPurchase(product);
+  const [quickOpen, setQuickOpen] = useState(false);
 
-  async function handleAdd(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (soldOut || state === "adding") return;
-    setState("adding");
-    const { error } = await add({ variantId: product.variantId, quantity: 1 });
-    if (error) {
-      setState("idle");
-      return;
-    }
-    setState("added");
-    setTimeout(() => setState("idle"), 1500);
-  }
+  const addLabel = p.soldOut ? "Sold out" : p.error ? "Try again" : "Add";
 
   return (
     <motion.article
@@ -43,34 +31,63 @@ export function ProductCard({
       whileHover={{ y: -6 }}
       className="group relative flex flex-col overflow-hidden rounded-3xl bg-white shadow-[0_10px_40px_-20px_rgba(74,10,16,0.4)] ring-1 ring-maroon/10"
     >
-      <Link
-        href={`/products/${product.slug}`}
-        className="relative block aspect-square overflow-hidden bg-cream-soft"
-      >
-        {product.image ? (
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-chilli/15 to-maroon/15 text-5xl">
-            🫙
+      <div className="relative aspect-square overflow-hidden bg-cream-soft">
+        <Link
+          href={`/products/${product.slug}`}
+          className="absolute inset-0 block"
+          aria-label={product.name}
+        >
+          {product.image ? (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-chilli/15 to-maroon/15 text-5xl">
+              🫙
+            </div>
+          )}
+        </Link>
+
+        {/* Badge stack */}
+        <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-1.5">
+          {p.discountPct > 0 && (
+            <span className="rounded-full bg-chilli px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-cream shadow">
+              {p.discountPct}% off
+            </span>
+          )}
+          {product.isBestseller && (
+            <span className="rounded-full bg-turmeric px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-charcoal shadow">
+              ★ Bestseller
+            </span>
+          )}
+          {product.heat > 0 && (
+            <span className="flex items-center gap-1 rounded-full bg-maroon/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-cream backdrop-blur">
+              <Flame /> {"🌶️".repeat(product.heat)}
+            </span>
+          )}
+        </div>
+
+        {/* Quick view — hover-reveal on desktop, always shown on touch */}
+        <button
+          type="button"
+          onClick={() => setQuickOpen(true)}
+          className="absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-cream/95 px-4 py-2 text-xs font-bold uppercase tracking-wider text-maroon opacity-100 shadow-lg ring-1 ring-maroon/10 transition-all hover:bg-chilli hover:text-cream focus-visible:opacity-100 md:opacity-0 md:group-hover:opacity-100"
+        >
+          Quick view
+        </button>
+
+        {p.soldOut && (
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-charcoal/35">
+            <span className="rounded-full bg-charcoal/85 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-cream">
+              Sold out
+            </span>
           </div>
         )}
-        {product.heat > 0 && (
-          <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-maroon/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-cream backdrop-blur">
-            <Flame /> {"🌶️".repeat(product.heat)}
-          </div>
-        )}
-        {soldOut && (
-          <div className="absolute right-3 top-3 rounded-full bg-charcoal/85 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-cream">
-            Sold out
-          </div>
-        )}
-      </Link>
+      </div>
 
       <div className="flex flex-1 flex-col p-5">
         {product.telugu && (
@@ -88,48 +105,107 @@ export function ProductCard({
             {stripHtml(product.description)}
           </p>
         )}
-        <div className="mt-4 flex items-end justify-between">
-          <div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-display text-xl font-bold text-maroon">
-                {formatMoney(product.price, product.currency)}
-              </span>
-              {product.compareAtPrice &&
-                product.compareAtPrice > product.price && (
-                  <span className="text-xs text-charcoal/40 line-through">
-                    {formatMoney(product.compareAtPrice, product.currency)}
-                  </span>
-                )}
-            </div>
-            {product.weight && (
-              <div className="text-[11px] uppercase tracking-wider text-charcoal/50">
-                {product.weight}
-              </div>
-            )}
+
+        <div className="mt-4 flex items-baseline gap-2">
+          <span className="font-display text-xl font-bold text-maroon">
+            {formatMoney(p.price, product.currency)}
+          </span>
+          {p.compareAt && p.compareAt > p.price && (
+            <span className="text-xs text-charcoal/40 line-through">
+              {formatMoney(p.compareAt, product.currency)}
+            </span>
+          )}
+          {p.weight && (
+            <span className="ml-auto text-[11px] uppercase tracking-wider text-charcoal/50">
+              {p.weight}
+            </span>
+          )}
+        </div>
+
+        {/* Variant picker */}
+        {p.variants.length > 1 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {p.variants.map((v) => {
+              const active = v.id === p.variantId;
+              const vSoldOut = v.inventoryQty <= 0;
+              return (
+                <button
+                  key={v.id}
+                  type="button"
+                  disabled={vSoldOut}
+                  onClick={() => p.setVariantId(v.id)}
+                  className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:cursor-not-allowed disabled:line-through disabled:opacity-40 ${
+                    active
+                      ? "border-chilli bg-chilli text-cream"
+                      : "border-maroon/20 text-maroon hover:border-chilli"
+                  }`}
+                >
+                  {v.weight ?? v.name}
+                </button>
+              );
+            })}
           </div>
-          <button
-            type="button"
-            onClick={handleAdd}
-            disabled={soldOut || state === "adding"}
-            className="rounded-full bg-chilli px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream shadow-[0_4px_0_#5a0512] transition-transform hover:-translate-y-0.5 active:translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
-          >
-            {soldOut
-              ? "Sold out"
-              : state === "adding"
-                ? "Adding…"
-                : state === "added"
-                  ? "Added ✓"
-                  : "Add"}
-          </button>
+        )}
+
+        {/* Add button, or cart-bound stepper once in the cart */}
+        <div className="mt-4">
+          {p.inCart > 0 ? (
+            <div className="flex items-center justify-between rounded-full bg-chilli px-1.5 py-1 text-cream shadow-[0_4px_0_#5a0512]">
+              <button
+                type="button"
+                aria-label="Decrease quantity"
+                onClick={p.dec}
+                disabled={p.busy}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-lg font-bold transition-colors hover:bg-chilli-deep disabled:opacity-50"
+              >
+                −
+              </button>
+              <span className="min-w-[2ch] text-center text-sm font-bold tabular-nums">
+                {p.inCart}
+              </span>
+              <button
+                type="button"
+                aria-label="Increase quantity"
+                onClick={p.inc}
+                disabled={p.busy || p.atMax}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-lg font-bold transition-colors hover:bg-chilli-deep disabled:opacity-50"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={p.inc}
+              disabled={p.soldOut || p.busy}
+              className="w-full rounded-full bg-chilli px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-cream shadow-[0_4px_0_#5a0512] transition-transform hover:-translate-y-0.5 active:translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+            >
+              {addLabel}
+            </button>
+          )}
         </div>
       </div>
+
+      <QuickViewDialog
+        product={product}
+        open={quickOpen}
+        onClose={() => setQuickOpen(false)}
+        initialVariantId={p.variantId}
+      />
     </motion.article>
   );
 }
 
 function Flame() {
   return (
-    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <title>Heat</title>
       <path d="M13 2c1 4 4 5 4 9a5 5 0 11-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3 1-5 2-8z" />
     </svg>
   );
