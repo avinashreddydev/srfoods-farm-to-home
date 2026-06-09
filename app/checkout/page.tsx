@@ -1,5 +1,4 @@
 import { CheckoutForm } from "../components/CheckoutForm";
-import { PageBanner } from "../components/PageBanner";
 
 export const metadata = {
   title: "Checkout · SR Foods",
@@ -8,19 +7,8 @@ export const metadata = {
 
 export default function CheckoutPage() {
   return (
-    <>
-      <PageBanner
-        eyebrow="Almost there"
-        title={
-          <>
-            Secure <span className="text-turmeric">Checkout</span>
-          </>
-        }
-        telugu="చెల్లింపు"
-      />
-      <section className="bg-cream py-16 md:py-20">
-        <CheckoutForm />
-      </section>
-    </>
+    <section className="bg-cream py-16 md:py-20">
+      <CheckoutForm />
+    </section>
   );
 }
