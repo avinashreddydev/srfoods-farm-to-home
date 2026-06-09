@@ -17,7 +17,7 @@ export async function Footer() {
   const pages = await getPages();
 
   return (
-    <footer className="mt-24 bg-charcoal text-cream/80">
+    <footer className="bg-charcoal text-cream/80">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 sm:grid-cols-2 lg:grid-cols-5 md:px-8">
         <div>
           <div className="flex items-center gap-3">
