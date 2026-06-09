@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { storefront } from "@/lib/storekit-client";
+import { useCartSheet } from "../../components/CartSheet";
 import { formatMoney } from "../../lib/format";
 
 export const dynamic = "force-dynamic";
 
 function Result() {
   const orderId = useSearchParams().get("orderId");
+  const { open: openCart } = useCartSheet();
   const { status, order, message, retry } =
     storefront.usePaymentConfirmation(orderId);
 
@@ -83,12 +85,13 @@ function Result() {
         >
           Retry
         </button>
-        <Link
-          href="/cart"
+        <button
+          type="button"
+          onClick={openCart}
           className="rounded-full border-2 border-maroon px-7 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream"
         >
           Back to cart
-        </Link>
+        </button>
       </div>
     </Shell>
   );

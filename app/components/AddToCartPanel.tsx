@@ -2,11 +2,11 @@
 
 import type { Product } from "@usestorekit/sdk";
 import { motion } from "motion/react";
-import Link from "next/link";
 import { useState } from "react";
 import { storefront } from "@/lib/storekit-client";
 import { formatMoney } from "../lib/format";
 import { useProductPurchase } from "../lib/use-product-purchase";
+import { useCartSheet } from "./CartSheet";
 
 export function AddToCartPanel({ product }: { product: Product }) {
   // The detail page uses a free quantity selector + "Added" confirmation rather
@@ -14,6 +14,7 @@ export function AddToCartPanel({ product }: { product: Product }) {
   // `add` directly — but the variant/price/sold-out derivation is shared with
   // the cards via `useProductPurchase`.
   const { add } = storefront.useCart();
+  const { open: openCart } = useCartSheet();
   const {
     variants,
     variantId,
@@ -127,12 +128,13 @@ export function AddToCartPanel({ product }: { product: Product }) {
           <span className="text-sm text-charcoal/70">
             Added to your basket.
           </span>
-          <Link
-            href="/cart"
+          <button
+            type="button"
+            onClick={openCart}
             className="text-sm font-bold uppercase tracking-wider text-chilli hover:underline"
           >
             View cart →
-          </Link>
+          </button>
         </motion.div>
       )}
       {state === "error" && (

@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { storefront } from "@/lib/storekit-client";
 import { useAuthModal } from "./AuthModal";
+import { useCartSheet } from "./CartSheet";
 
 type NavLink = { href: string; label: string };
 
@@ -23,6 +24,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
   const { count } = storefront.useCart();
   const { data: customer, loading: sessionLoading } = storefront.useSession();
   const { open: openLogin } = useAuthModal();
+  const { open: openCart } = useCartSheet();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -117,8 +119,10 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
                 <span>Login</span>
               </button>
             ))}
-          <Link
-            href="/cart"
+          <button
+            type="button"
+            onClick={openCart}
+            aria-label="Open cart"
             className="group relative inline-flex items-center gap-2 rounded-full bg-turmeric px-4 py-2 text-sm font-semibold text-maroon shadow-[0_4px_0_#7a5e10] transition-transform hover:-translate-y-0.5"
           >
             <CartIcon />
@@ -126,7 +130,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
             <span className="rounded-full bg-maroon px-1.5 py-0.5 text-[10px] font-bold text-turmeric">
               {count}
             </span>
-          </Link>
+          </button>
           <button
             type="button"
             aria-label="Toggle menu"

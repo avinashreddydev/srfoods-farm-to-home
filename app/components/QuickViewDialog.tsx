@@ -9,6 +9,7 @@ import { createPortal } from "react-dom";
 import { formatMoney } from "../lib/format";
 import { productHeat } from "../lib/product";
 import { useProductPurchase } from "../lib/use-product-purchase";
+import { useCartSheet } from "./CartSheet";
 
 export function QuickViewDialog({
   product,
@@ -50,6 +51,7 @@ function QuickViewContent({
   initialVariantId?: string;
 }) {
   const p = useProductPurchase(product, initialVariantId);
+  const { open: openCart } = useCartSheet();
   const panelRef = useRef<HTMLDivElement>(null);
   const images = product.images;
   const heat = productHeat(product);
@@ -329,13 +331,16 @@ function QuickViewContent({
                 View full details →
               </Link>
               {p.inCart > 0 && (
-                <Link
-                  href="/cart"
-                  onClick={onClose}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    openCart();
+                  }}
                   className="text-sm font-bold uppercase tracking-wider text-maroon hover:underline"
                 >
                   Go to cart →
-                </Link>
+                </button>
               )}
             </div>
           </div>

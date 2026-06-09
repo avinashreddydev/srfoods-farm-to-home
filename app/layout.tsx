@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AuthModalProvider } from "./components/AuthModal";
+import { CartSheetProvider } from "./components/CartSheet";
 import { Footer } from "./components/Footer";
 import { Nav } from "./components/Nav";
 import { getCollections } from "./lib/storefront";
@@ -39,9 +40,11 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-cream text-charcoal">
         <AuthModalProvider>
-          <Nav categories={categoryLinks} />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <CartSheetProvider>
+            <Nav categories={categoryLinks} />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </CartSheetProvider>
         </AuthModalProvider>
       </body>
     </html>

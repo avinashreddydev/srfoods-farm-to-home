@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getPages, getStoreContact } from "../lib/storefront";
+import { CartSheetLink } from "./CartSheet";
 
 // CMS pages that already have a bespoke top-level route — link those instead of
 // the generic /pages/<slug> renderer.
@@ -50,9 +51,9 @@ export async function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/cart" className="hover:text-turmeric">
+              <CartSheetLink className="hover:text-turmeric">
                 Cart
-              </Link>
+              </CartSheetLink>
             </li>
           </ul>
         </div>
