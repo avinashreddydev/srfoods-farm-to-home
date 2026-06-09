@@ -2,6 +2,7 @@
 
 import type { Address, Order, OrderStatus } from "@usestorekit/sdk/react";
 import { motion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,6 +10,33 @@ import { storefront } from "@/lib/storekit-client";
 import { formatMoney } from "../lib/format";
 import { formatPhoneIndia } from "../lib/phone";
 import { useAuthModal } from "./AuthModal";
+import { useCartSheet } from "./CartSheet";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./responsive-dialog";
+
+type OrderLine = Order["items"][number];
+
+/** Product/variant naming: an item's `variantSnapshot.name` is the size
+ * ("250 g", "1 kg"), while the product name lives on `item.product`. */
+function lineTitle(item: OrderLine): string {
+  return item.product?.name ?? item.variantSnapshot.name;
+}
+
+/** A short, readable one-liner for the order list (no mid-word truncation of
+ * a single giant string — we summarise instead). */
+function summariseItems(items: OrderLine[]): string {
+  const names = items.map(lineTitle);
+  const shown = names.slice(0, 2).join(", ");
+  const extra = names.length - 2;
+  return extra > 0 ? `${shown} +${extra} more` : shown;
+}
 
 const dateFmt = new Intl.DateTimeFormat("en-IN", {
   day: "numeric",
@@ -16,9 +44,58 @@ const dateFmt = new Intl.DateTimeFormat("en-IN", {
   year: "numeric",
 });
 
+const dateTimeFmt = new Intl.DateTimeFormat("en-IN", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+});
+
 function formatDate(iso: string): string {
   const d = new Date(iso);
   return Number.isNaN(d.getTime()) ? "" : dateFmt.format(d);
+}
+
+function formatDateTime(iso: string): string {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "" : dateTimeFmt.format(d);
+}
+
+function humanize(status: string): string {
+  return status.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+}
+
+type StatusTone = "positive" | "pending" | "negative";
+
+function statusTone(status: OrderStatus): StatusTone {
+  if (status === "failed" || status === "cancelled" || status === "refunded") {
+    return "negative";
+  }
+  if (status === "pending") return "pending";
+  return "positive";
+}
+
+/** Map an order's status onto a fulfilment timeline. Pickup orders relabel the
+ * last two steps; anything cancelled/refunded skips the tracker entirely. */
+function orderProgress(order: Order): { steps: string[]; current: number } {
+  const pickup = /pickup/i.test(order.serviceMode ?? order.orderType ?? "");
+  const steps = pickup
+    ? ["Placed", "Confirmed", "Preparing", "Ready for pickup", "Picked up"]
+    : ["Placed", "Confirmed", "Preparing", "Out for delivery", "Delivered"];
+  const byStatus: Record<string, number> = {
+    pending: 0,
+    open: 1,
+    paid: 1,
+    settled: 1,
+    confirmed: 1,
+    preparing: 2,
+    ready_for_pickup: 3,
+    out_for_delivery: 3,
+    fulfilled: 4,
+    delivered: 4,
+  };
+  return { steps, current: byStatus[order.status] ?? 1 };
 }
 
 export function AccountView() {
@@ -271,35 +348,416 @@ function OrdersCard() {
       ) : (
         <ul className="divide-y divide-maroon/10">
           {orders.map((order) => (
-            <li
-              key={order.id}
-              className="flex flex-wrap items-center justify-between gap-3 py-4"
-            >
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-display font-bold text-maroon">
-                    #{order.id.slice(-6).toUpperCase()}
-                  </span>
-                  <StatusBadge status={order.status} />
-                </div>
-                <p className="mt-1 truncate text-xs text-charcoal/55">
-                  {formatDate(order.createdAt)} ·{" "}
-                  {order.items
-                    .map(
-                      (i) =>
-                        `${i.product?.name ?? i.variantSnapshot.name} ×${i.quantity}`,
-                    )
-                    .join(", ")}
-                </p>
-              </div>
-              <span className="font-display font-bold text-maroon">
-                {formatMoney(order.total, order.currency)}
-              </span>
-            </li>
+            <OrderRow key={order.id} order={order} />
           ))}
         </ul>
       )}
     </Card>
+  );
+}
+
+function OrderRow({ order }: { order: Order }) {
+  const [open, setOpen] = useState(false);
+  const count = order.items.reduce((n, i) => n + i.quantity, 0);
+
+  return (
+    <li>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <button
+            type="button"
+            className="group -mx-3 flex w-full items-center gap-3 rounded-2xl px-3 py-4 text-left transition-colors hover:bg-cream-soft/60"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <span className="font-display font-bold text-maroon">
+                  #{order.id.slice(-6).toUpperCase()}
+                </span>
+                <StatusBadge status={order.status} />
+              </div>
+              <p className="mt-1 truncate text-xs text-charcoal/55">
+                {formatDate(order.createdAt)} · {count}{" "}
+                {count === 1 ? "item" : "items"} · {summariseItems(order.items)}
+              </p>
+            </div>
+            <span className="font-display font-bold text-maroon">
+              {formatMoney(order.total, order.currency)}
+            </span>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+              className="shrink-0 text-maroon/25 transition-colors group-hover:text-chilli"
+            >
+              <path
+                d="M9 6l6 6-6 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-xl">
+          <OrderDetails order={order} onClose={() => setOpen(false)} />
+        </DialogContent>
+      </Dialog>
+    </li>
+  );
+}
+
+function OrderDetails({
+  order,
+  onClose,
+}: {
+  order: Order;
+  onClose: () => void;
+}) {
+  const { add } = storefront.useCart();
+  const { open: openCart } = useCartSheet();
+  const [reordering, setReordering] = useState(false);
+
+  const count = order.items.reduce((n, i) => n + i.quantity, 0);
+  const currency = order.currency;
+  const discount = order.discountAmount ?? 0;
+  // Anything the merchant added on top of items-minus-discount (tax, delivery,
+  // packaging) — derived so the breakdown always reconciles to the total.
+  const extraCharges = Math.max(0, order.total - order.subtotal + discount);
+  const tone = statusTone(order.status);
+  const needsPayment =
+    !!order.paymentRedirectUrl &&
+    (order.status === "pending" || order.status === "failed");
+  const reorderable = order.items.filter((i) => i.variantId);
+
+  async function reorder() {
+    if (reordering || reorderable.length === 0) return;
+    setReordering(true);
+    for (const item of reorderable) {
+      if (item.variantId) {
+        await add({ variantId: item.variantId, quantity: item.quantity });
+      }
+    }
+    setReordering(false);
+    onClose();
+    openCart();
+  }
+
+  return (
+    <>
+      <DialogHeader>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <DialogTitle>#{order.id.slice(-6).toUpperCase()}</DialogTitle>
+          <StatusBadge status={order.status} />
+        </div>
+        <DialogDescription>
+          Placed {formatDateTime(order.createdAt)} · {count}{" "}
+          {count === 1 ? "item" : "items"}
+        </DialogDescription>
+      </DialogHeader>
+
+      {tone !== "positive" && <StatusBanner order={order} tone={tone} />}
+      {tone !== "negative" && <OrderTracker order={order} />}
+
+      <DeliveryInfo order={order} />
+
+      <SectionLabel>
+        {count} {count === 1 ? "item" : "items"}
+      </SectionLabel>
+      <ul className="divide-y divide-maroon/10">
+        {order.items.map((item) => {
+          const img = item.product?.image;
+          return (
+            <li key={item.id} className="flex items-center gap-4 py-3">
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-cream-soft ring-1 ring-maroon/10">
+                {img ? (
+                  <Image
+                    src={img}
+                    alt={lineTitle(item)}
+                    fill
+                    sizes="56px"
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-xl">
+                    🫙
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold text-maroon">
+                  {lineTitle(item)}
+                </p>
+                <p className="mt-0.5 text-xs text-charcoal/55">
+                  {item.product && <span>{item.variantSnapshot.name} · </span>}
+                  {formatMoney(item.unitPrice, currency)} × {item.quantity}
+                </p>
+              </div>
+              <span className="shrink-0 font-display font-bold text-maroon">
+                {formatMoney(item.total, currency)}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+
+      <SectionLabel>Payment summary</SectionLabel>
+      <dl className="space-y-2.5 text-sm">
+        <SummaryRow
+          label="Item subtotal"
+          value={formatMoney(order.subtotal, currency)}
+        />
+        {discount > 0 && (
+          <SummaryRow
+            label={
+              order.appliedCouponCode
+                ? `Discount (${order.appliedCouponCode})`
+                : "Discount"
+            }
+            value={`− ${formatMoney(discount, currency)}`}
+            accent
+          />
+        )}
+        {extraCharges > 0 && (
+          <SummaryRow
+            label="Taxes & charges"
+            value={formatMoney(extraCharges, currency)}
+          />
+        )}
+        <div className="flex items-center justify-between border-t border-maroon/10 pt-3">
+          <span className="font-display text-base font-bold text-maroon">
+            Total
+          </span>
+          <span className="font-display text-lg font-bold text-maroon">
+            {formatMoney(order.total, currency)}
+          </span>
+        </div>
+      </dl>
+
+      {order.notes && (
+        <div className="mt-5 rounded-2xl bg-cream-soft/60 p-4">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-charcoal/45">
+            Order note
+          </p>
+          <p className="mt-1 text-sm text-charcoal/75">{order.notes}</p>
+        </div>
+      )}
+
+      <div className="mt-3 text-[11px] text-charcoal/40">
+        Order ID {order.id}
+      </div>
+
+      <div className="mt-6 flex flex-col gap-3">
+        {needsPayment && (
+          <a
+            href={order.paymentRedirectUrl ?? "#"}
+            className="btn-primary flex justify-center rounded-full px-6 py-3 text-sm font-bold uppercase tracking-wider"
+          >
+            Complete payment →
+          </a>
+        )}
+        {order.trackingUrl && (
+          <a
+            href={order.trackingUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex justify-center rounded-full border-2 border-maroon px-6 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream"
+          >
+            Track order →
+          </a>
+        )}
+        {reorderable.length > 0 && (
+          <button
+            type="button"
+            onClick={reorder}
+            disabled={reordering}
+            className={
+              needsPayment
+                ? "flex justify-center rounded-full border-2 border-maroon px-6 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream disabled:opacity-60"
+                : "btn-primary flex justify-center rounded-full px-6 py-3 text-sm font-bold uppercase tracking-wider disabled:opacity-60"
+            }
+          >
+            {reordering ? "Adding to basket…" : "Reorder items →"}
+          </button>
+        )}
+        <div className="flex items-center justify-center gap-4 pt-1 text-xs font-bold uppercase tracking-wider">
+          <Link
+            href="/contact"
+            className="text-charcoal/50 transition-colors hover:text-chilli"
+          >
+            Need help?
+          </Link>
+          <span className="text-maroon/15">·</span>
+          <DialogClose className="text-charcoal/50 transition-colors hover:text-chilli">
+            Close
+          </DialogClose>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="mt-6 mb-2 border-t border-maroon/10 pt-5 text-[11px] font-bold uppercase tracking-[0.18em] text-charcoal/45">
+      {children}
+    </h3>
+  );
+}
+
+function OrderTracker({ order }: { order: Order }) {
+  const { steps, current } = orderProgress(order);
+
+  return (
+    <ol className="mt-5 rounded-2xl bg-cream-soft/50 p-5">
+      {steps.map((label, i) => {
+        const done = i < current;
+        const active = i === current;
+        const isLast = i === steps.length - 1;
+        return (
+          <li key={label} className="flex gap-3.5">
+            <div className="flex flex-col items-center">
+              <span
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ring-1 ${
+                  done
+                    ? "bg-chilli text-cream ring-chilli"
+                    : active
+                      ? "bg-cream text-chilli ring-2 ring-chilli"
+                      : "bg-cream text-transparent ring-maroon/15"
+                }`}
+              >
+                {done ? (
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M5 13l4 4L19 7"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ) : (
+                  <span
+                    className={`h-2 w-2 rounded-full ${active ? "bg-chilli" : "bg-maroon/20"}`}
+                  />
+                )}
+              </span>
+              {!isLast && (
+                <span
+                  className={`my-1 w-0.5 flex-1 ${done ? "bg-chilli" : "bg-maroon/15"}`}
+                  style={{ minHeight: "1.25rem" }}
+                />
+              )}
+            </div>
+            <div className={isLast ? "pb-0" : "pb-1"}>
+              <p
+                className={`text-sm font-semibold ${
+                  done || active ? "text-maroon" : "text-charcoal/40"
+                }`}
+              >
+                {label}
+              </p>
+              {active && (
+                <p className="mt-0.5 text-xs text-charcoal/55">
+                  {humanize(order.status)}
+                </p>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function StatusBanner({ order, tone }: { order: Order; tone: StatusTone }) {
+  const COPY: Record<string, string> = {
+    pending: "Awaiting payment — complete it to confirm this order.",
+    failed: "Payment failed. Retry the payment to confirm this order.",
+    cancelled: "This order was cancelled.",
+    refunded: "This order was refunded to your original payment method.",
+  };
+  const cls =
+    tone === "pending"
+      ? "bg-turmeric/15 text-maroon"
+      : order.status === "refunded"
+        ? "bg-charcoal/[0.06] text-charcoal/70"
+        : "bg-chilli/10 text-chilli";
+
+  return (
+    <p className={`mt-5 rounded-2xl px-4 py-3 text-sm font-medium ${cls}`}>
+      {COPY[order.status] ?? humanize(order.status)}
+    </p>
+  );
+}
+
+function DeliveryInfo({ order }: { order: Order }) {
+  const mode = order.serviceMode ?? order.orderType;
+  const rows: Array<{ label: string; value: string }> = [];
+  if (mode) rows.push({ label: "Fulfilment", value: humanize(mode) });
+  if (order.estimatedDelivery) {
+    rows.push({
+      label: "Estimated delivery",
+      value: formatDate(order.estimatedDelivery),
+    });
+  }
+  if (order.estimatedReadyAt) {
+    rows.push({
+      label: "Ready by",
+      value: formatDateTime(order.estimatedReadyAt),
+    });
+  }
+  if (order.deliveredAt) {
+    rows.push({ label: "Delivered", value: formatDateTime(order.deliveredAt) });
+  }
+  if (order.deliveryPartner) {
+    rows.push({ label: "Courier", value: order.deliveryPartner });
+  }
+  if (rows.length === 0) return null;
+
+  return (
+    <>
+      <SectionLabel>Delivery</SectionLabel>
+      <dl className="grid gap-3 sm:grid-cols-2">
+        {rows.map((r) => (
+          <div key={r.label}>
+            <dt className="text-[11px] font-bold uppercase tracking-wider text-charcoal/45">
+              {r.label}
+            </dt>
+            <dd className="mt-0.5 text-sm text-charcoal">{r.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </>
+  );
+}
+
+function SummaryRow({
+  label,
+  value,
+  accent = false,
+}: {
+  label: string;
+  value: string;
+  accent?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between">
+      <dt className="text-charcoal/60">{label}</dt>
+      <dd
+        className={`font-semibold ${accent ? "text-chilli" : "text-charcoal"}`}
+      >
+        {value}
+      </dd>
+    </div>
   );
 }
 

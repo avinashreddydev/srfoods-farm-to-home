@@ -11,6 +11,7 @@ import {
 } from "react";
 import { storefront } from "@/lib/storekit-client";
 import { formatPhoneIndia, localDigitsIndia, toE164India } from "../lib/phone";
+import { Dialog, DialogContent, DialogTitle } from "./responsive-dialog";
 
 const RESEND_SECONDS = 30;
 
@@ -58,80 +59,17 @@ function AuthModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  // Lock body scroll + close on Escape while open.
-  useEffect(() => {
-    if (!isOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [isOpen, onClose]);
-
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {/* Backdrop */}
-          <button
-            type="button"
-            aria-label="Close sign in"
-            onClick={onClose}
-            className="absolute inset-0 bg-charcoal/60 backdrop-blur-sm"
-          />
-
-          {/* Panel — bottom drawer on mobile, dialog on desktop */}
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="auth-modal-title"
-            initial={{ y: 32, opacity: 0, scale: 0.98 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 32, opacity: 0, scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 360, damping: 32 }}
-            className="relative z-10 w-full max-h-[92vh] overflow-y-auto rounded-t-3xl bg-white p-6 pb-8 shadow-[0_-10px_60px_-15px_rgba(74,10,16,0.55)] sm:max-w-md sm:rounded-3xl sm:p-8 sm:shadow-[0_30px_80px_-25px_rgba(74,10,16,0.6)]"
-          >
-            {/* Mobile grab handle */}
-            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-maroon/15 sm:hidden" />
-
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close"
-              className="absolute right-4 top-4 hidden h-9 w-9 items-center justify-center rounded-full text-charcoal/40 transition-colors hover:bg-cream-soft hover:text-charcoal sm:flex"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M6 6l12 12M18 6L6 18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-
-            <AuthPanel isOpen={isOpen} onSuccess={onClose} />
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <DialogContent className="sm:max-w-md">
+        <AuthPanel isOpen={isOpen} onSuccess={onClose} />
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -235,12 +173,9 @@ function AuthPanel({
           🌶️
         </span>
         <div>
-          <h2
-            id="auth-modal-title"
-            className="font-display text-2xl font-bold text-maroon"
-          >
+          <DialogTitle>
             {step === "phone" ? "Sign in" : "Verify your number"}
-          </h2>
+          </DialogTitle>
           <p className="text-xs uppercase tracking-[0.2em] text-charcoal/50">
             SR Foods · Farm to Home
           </p>
