@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import { Nav } from "./components/Nav";
+import { AuthModalProvider } from "./components/AuthModal";
 import { Footer } from "./components/Footer";
+import { Nav } from "./components/Nav";
 import { getCollections } from "./lib/storefront";
 
 const body = Inter({
@@ -37,9 +38,11 @@ export default async function RootLayout({
       className={`${body.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-charcoal">
-        <Nav categories={categoryLinks} />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <AuthModalProvider>
+          <Nav categories={categoryLinks} />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </AuthModalProvider>
       </body>
     </html>
   );

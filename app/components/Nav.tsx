@@ -1,11 +1,12 @@
 "use client";
 
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
 import { storefront } from "@/lib/storekit-client";
+import { useAuthModal } from "./AuthModal";
 
 type NavLink = { href: string; label: string };
 
@@ -20,8 +21,18 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
   ];
   const pathname = usePathname();
   const { count } = storefront.useCart();
+  const { data: customer, loading: sessionLoading } = storefront.useSession();
+  const { open: openLogin } = useAuthModal();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const firstName = customer?.name?.trim().split(" ")[0];
+  const accountActive = pathname.startsWith("/account");
+  const accountClass = `group hidden items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors sm:inline-flex ${
+    accountActive
+      ? "border-turmeric/60 text-turmeric"
+      : "border-cream/25 text-cream/90 hover:border-turmeric/50 hover:text-turmeric"
+  }`;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -88,6 +99,24 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
         </nav>
 
         <div className="flex items-center gap-2">
+          {!sessionLoading &&
+            (customer ? (
+              <Link href="/account" className={accountClass}>
+                <UserIcon />
+                <span className="max-w-[7rem] truncate">
+                  {firstName ?? "Account"}
+                </span>
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={openLogin}
+                className={accountClass}
+              >
+                <UserIcon />
+                <span>Login</span>
+              </button>
+            ))}
           <Link
             href="/cart"
             className="group relative inline-flex items-center gap-2 rounded-full bg-turmeric px-4 py-2 text-sm font-semibold text-maroon shadow-[0_4px_0_#7a5e10] transition-transform hover:-translate-y-0.5"
@@ -104,7 +133,13 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
             onClick={() => setOpen((s) => !s)}
             className="md:hidden rounded-full p-2 text-cream"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
               <path
                 d={open ? "M6 6l12 12M6 18L18 6" : "M3 6h18M3 12h18M3 18h18"}
                 stroke="currentColor"
@@ -133,6 +168,28 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
                 {l.label}
               </Link>
             ))}
+            {customer ? (
+              <Link
+                href="/account"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 rounded-lg px-3 py-3 text-turmeric hover:bg-chilli-deep/40"
+              >
+                <UserIcon />
+                {firstName ?? "My Account"}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  openLogin();
+                }}
+                className="flex items-center gap-2 rounded-lg px-3 py-3 text-left text-turmeric hover:bg-chilli-deep/40"
+              >
+                <UserIcon />
+                Login / Sign up
+              </button>
+            )}
           </div>
         </motion.div>
       )}
@@ -140,9 +197,35 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
   );
 }
 
+function UserIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M4.5 19.5a7.5 7.5 0 0 1 15 0"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 function CartIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
       <path
         d="M3 4h2l2.4 12.3a2 2 0 002 1.7h8.2a2 2 0 002-1.6L21 8H6"
         stroke="currentColor"

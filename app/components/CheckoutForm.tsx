@@ -5,14 +5,21 @@ import { useActionState } from "react";
 import { storefront } from "@/lib/storekit-client";
 import { type CheckoutState, startCheckout } from "../checkout/actions";
 import { formatMoney } from "../lib/format";
+import { formatPhoneIndia } from "../lib/phone";
+import { useAuthModal } from "./AuthModal";
 
 const INITIAL: CheckoutState = { error: null };
 
 export function CheckoutForm() {
   const { cart, count, loading } = storefront.useCart();
+  const { data: customer, loading: sessionLoading } = storefront.useSession();
+  const { addresses, loading: addressLoading } = storefront.useAddresses();
+  const { open: openLogin } = useAuthModal();
   const [state, formAction, pending] = useActionState(startCheckout, INITIAL);
 
-  if (loading && !cart) {
+  // Wait for session + saved addresses so prefilled defaults are present on the
+  // first (uncontrolled) render of the form fields.
+  if ((loading && !cart) || sessionLoading || addressLoading) {
     return (
       <p className="mx-auto max-w-2xl px-6 py-10 text-center text-charcoal/60">
         Loading your order…
@@ -44,6 +51,21 @@ export function CheckoutForm() {
 
   const currency = cart.currency;
 
+  // Prefill from the customer's default saved address, falling back to their
+  // profile name/phone. Guests get blank fields.
+  const da = addresses.find((a) => a.isDefault) ?? addresses[0];
+  const nameParts = (customer?.name ?? "").trim().split(/\s+/).filter(Boolean);
+  const defaults = {
+    firstName: da?.firstName || nameParts[0] || "",
+    lastName: da?.lastName || nameParts.slice(1).join(" ") || "",
+    phone: da?.phone || customer?.phone || "",
+    address: da?.address || "",
+    city: da?.city || "",
+    state: da?.state || "",
+    zipCode: da?.zipCode || "",
+    country: da?.country || "India",
+  };
+
   return (
     <form
       action={formAction}
@@ -51,28 +73,88 @@ export function CheckoutForm() {
     >
       {/* Shipping details */}
       <div>
+        {customer ? (
+          <div className="mb-6 flex items-center justify-between gap-3 rounded-2xl bg-maroon/5 px-4 py-3 text-sm ring-1 ring-maroon/10">
+            <span className="text-charcoal/70">
+              Checking out as{" "}
+              <span className="font-semibold text-maroon">
+                {customer.name || `+91 ${formatPhoneIndia(customer.phone)}`}
+              </span>
+            </span>
+            <Link
+              href="/account"
+              className="shrink-0 text-xs font-bold uppercase tracking-wider text-chilli hover:text-chilli-deep"
+            >
+              Account
+            </Link>
+          </div>
+        ) : (
+          <div className="mb-6 flex items-center justify-between gap-3 rounded-2xl bg-turmeric/15 px-4 py-3 text-sm ring-1 ring-turmeric/40">
+            <span className="text-charcoal/75">
+              Have an account? Sign in for faster checkout.
+            </span>
+            <button
+              type="button"
+              onClick={openLogin}
+              className="shrink-0 text-xs font-bold uppercase tracking-wider text-chilli hover:text-chilli-deep"
+            >
+              Sign in
+            </button>
+          </div>
+        )}
+
         <h2 className="font-display text-2xl font-bold text-maroon">
           Delivery details
         </h2>
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field name="firstName" label="First name" required />
-          <Field name="lastName" label="Last name" />
+          <Field
+            name="firstName"
+            label="First name"
+            required
+            defaultValue={defaults.firstName}
+          />
+          <Field
+            name="lastName"
+            label="Last name"
+            defaultValue={defaults.lastName}
+          />
           <Field
             name="phone"
             label="Phone"
             type="tel"
             className="sm:col-span-2"
+            defaultValue={defaults.phone}
           />
           <Field
             name="address"
             label="Address"
             required
             className="sm:col-span-2"
+            defaultValue={defaults.address}
           />
-          <Field name="city" label="City" required />
-          <Field name="state" label="State" required />
-          <Field name="zipCode" label="PIN code" required />
-          <Field name="country" label="Country" defaultValue="India" />
+          <Field
+            name="city"
+            label="City"
+            required
+            defaultValue={defaults.city}
+          />
+          <Field
+            name="state"
+            label="State"
+            required
+            defaultValue={defaults.state}
+          />
+          <Field
+            name="zipCode"
+            label="PIN code"
+            required
+            defaultValue={defaults.zipCode}
+          />
+          <Field
+            name="country"
+            label="Country"
+            defaultValue={defaults.country}
+          />
           <Field
             name="notes"
             label="Delivery notes (optional)"
