@@ -1,30 +1,32 @@
 "use client";
 
+import type { Product } from "@usestorekit/sdk";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
-import { motion } from "motion/react";
-import type { Product } from "@usestorekit/sdk";
 import { storefront } from "@/lib/storekit-client";
 import { formatMoney } from "../lib/format";
+import { useProductPurchase } from "../lib/use-product-purchase";
 
 export function AddToCartPanel({ product }: { product: Product }) {
+  // The detail page uses a free quantity selector + "Added" confirmation rather
+  // than the cart-bound stepper, so it keeps its own `qty`/`state` and calls
+  // `add` directly — but the variant/price/sold-out derivation is shared with
+  // the cards via `useProductPurchase`.
   const { add } = storefront.useCart();
-  const { data: store } = storefront.useStore();
-  const currency = store?.currency ?? "INR";
-  const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
+  const {
+    variants,
+    variantId,
+    setVariantId,
+    price,
+    compareAt,
+    currency,
+    soldOut,
+  } = useProductPurchase(product);
   const [qty, setQty] = useState(1);
   const [state, setState] = useState<"idle" | "adding" | "added" | "error">(
     "idle",
   );
-
-  const selected =
-    product.variants.find((v) => v.id === variantId) ?? product.variants[0];
-  const price = Number(selected?.price) || 0;
-  const compareAt = selected?.compareAtPrice
-    ? Number(selected.compareAtPrice)
-    : null;
-  const soldOut =
-    !product.isAvailable || !selected || selected.inventoryQty <= 0;
 
   async function handleAdd() {
     if (soldOut || state === "adding") return;
@@ -47,13 +49,13 @@ export function AddToCartPanel({ product }: { product: Product }) {
         )}
       </div>
 
-      {product.variants.length > 1 && (
+      {variants.length > 1 && (
         <div className="mt-6">
           <div className="text-xs font-bold uppercase tracking-wider text-charcoal/60">
             Size
           </div>
           <div className="mt-2 flex flex-wrap gap-2">
-            {product.variants.map((v) => {
+            {variants.map((v) => {
               const active = v.id === variantId;
               const vSoldOut = v.inventoryQty <= 0;
               return (
