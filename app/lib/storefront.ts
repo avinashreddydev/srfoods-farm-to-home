@@ -1,11 +1,13 @@
 import "server-only";
 import type {
+  Category as SKCategory,
   Page as SKPage,
   Product as SKProduct,
 } from "@usestorekit/sdk/next";
 import { cache } from "react";
 import { storekit } from "@/lib/storekit";
 import type {
+  StoreCategory,
   StorePage,
   StorePageSummary,
   StoreProduct,
@@ -65,6 +67,37 @@ export const getCategories = cache(async () => {
   if (error || !data) return [];
   return data.categories;
 });
+
+function mapCategory(c: SKCategory): StoreCategory {
+  const attrs = (c.attributes ?? {}) as Record<string, string>;
+  return {
+    id: c.id,
+    slug: c.slug,
+    name: c.name,
+    telugu: attrs.telugu ?? attrs.te ?? null,
+    description: c.description,
+    image: c.imageUrl,
+    position: c.position,
+    productCount: c.totalActiveProducts ?? null,
+  };
+}
+
+/**
+ * Top-level categories as the nav/homepage collections — ordered by their
+ * dashboard `position` and capped at `limit` (default 2: Pickles & Karam).
+ * Driven entirely by Storekit so adding a collection in the dashboard surfaces
+ * it across the site without code changes.
+ */
+export const getCollections = cache(
+  async (limit = 2): Promise<StoreCategory[]> => {
+    const cats = await getCategories();
+    return cats
+      .filter((c) => c.parentId == null)
+      .sort((a, b) => a.position - b.position)
+      .slice(0, limit)
+      .map(mapCategory);
+  },
+);
 
 function mapVariant(v: SKProduct["variants"][number]): StoreVariant {
   const attributes = (v.attributes ?? {}) as Record<string, string>;

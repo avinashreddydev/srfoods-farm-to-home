@@ -7,15 +7,17 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { storefront } from "@/lib/storekit-client";
 
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/pickles", label: "Pickles" },
-  { href: "/karam", label: "Karam" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-];
+type NavLink = { href: string; label: string };
 
-export function Nav() {
+export function Nav({ categories = [] }: { categories?: NavLink[] }) {
+  // Home and the static CMS pages are fixed; the collections in between
+  // (Pickles, Karam, …) are driven by Storekit via the root layout.
+  const links: NavLink[] = [
+    { href: "/", label: "Home" },
+    ...categories,
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
+  ];
   const pathname = usePathname();
   const { count } = storefront.useCart();
   const [scrolled, setScrolled] = useState(false);

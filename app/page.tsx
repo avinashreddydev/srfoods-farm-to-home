@@ -2,14 +2,17 @@ import Link from "next/link";
 import { Hero } from "./components/Hero";
 import { ProductCard } from "./components/ProductCard";
 import { SectionHeading } from "./components/Section";
-import { getBestSellers } from "./lib/storefront";
+import { getBestSellers, getCollections } from "./lib/storefront";
 import { CollectionCards } from "./components/CollectionCards";
 import { WhyUs } from "./components/WhyUs";
 import { Testimonials } from "./components/Testimonials";
 import { BrandStory } from "./components/BrandStory";
 
 export default async function Home() {
-  const bestSellers = await getBestSellers(6);
+  const [bestSellers, collections] = await Promise.all([
+    getBestSellers(6),
+    getCollections(2),
+  ]);
 
   return (
     <>
@@ -27,7 +30,7 @@ export default async function Home() {
             subtitle="From slow-cured pickles to stone-ground karam — explore the bold tastes of Andhra."
           />
           <div className="mt-12">
-            <CollectionCards />
+            <CollectionCards collections={collections} />
           </div>
         </div>
       </section>

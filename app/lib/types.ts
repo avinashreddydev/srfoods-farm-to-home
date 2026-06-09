@@ -6,6 +6,28 @@
 // variant's `attributes` map — that's where we store them in the dashboard,
 // since the core product model has no free-form metadata field.
 
+/**
+ * A top-level product category surfaced as a collection in the nav and on the
+ * homepage. Mapped from Storekit's `categories` resource in
+ * app/lib/storefront.ts. SDK 0.4.0 enriched categories with `imageUrl`,
+ * `description`, `position` and `totalActiveProducts`, which is what lets us
+ * render image-driven collection cards straight from the API.
+ */
+export type StoreCategory = {
+  id: string;
+  slug: string;
+  name: string;
+  /** Telugu name, from category attribute `telugu`. */
+  telugu: string | null;
+  description: string | null;
+  /** Category image served by Storekit (null if none set). */
+  image: string | null;
+  /** Sort order from the dashboard. */
+  position: number;
+  /** Active product count, when the API includes it. */
+  productCount: number | null;
+};
+
 export type StoreVariant = {
   id: string;
   name: string;
