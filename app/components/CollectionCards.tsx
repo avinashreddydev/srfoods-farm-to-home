@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import type { Category } from "@usestorekit/sdk";
 import { motion } from "motion/react";
+import Image from "next/image";
+import Link from "next/link";
 
 // Accent gradients and image fallbacks aren't part of the category data in
 // Storekit, so we keep a small brand palette here and index into it per card.
@@ -16,7 +16,7 @@ export function CollectionCards({ collections }: { collections: Category[] }) {
       {collections.map((c, i) => {
         const image = c.imageUrl ?? FALLBACK_IMAGES[i % FALLBACK_IMAGES.length];
         const accent = ACCENTS[i % ACCENTS.length];
-        const telugu = c.attributes?.telugu ?? c.attributes?.te;
+        const telugu = c.attributes?.telugu;
         const desc =
           c.description ??
           `Explore our handcrafted ${c.name.toLowerCase()} collection.`;

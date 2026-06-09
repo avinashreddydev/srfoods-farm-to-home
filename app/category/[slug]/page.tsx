@@ -49,7 +49,7 @@ export default async function CategoryPage({
       <PageBanner
         eyebrow="Our Collection"
         title={category.name}
-        telugu={category.attributes?.telugu ?? undefined}
+        telugu={category.attributes?.telugu}
         subtitle={category.description ?? undefined}
       />
       <section className="bg-cream py-16 md:py-20">

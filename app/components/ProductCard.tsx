@@ -1,10 +1,10 @@
 "use client";
 
+import type { Product } from "@usestorekit/sdk";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import type { Product } from "@usestorekit/sdk";
 import { formatMoney } from "../lib/format";
 import { stripHtml } from "../lib/html";
 import { productHeat } from "../lib/product";
@@ -21,8 +21,7 @@ export function ProductCard({
   const p = useProductPurchase(product);
   const [quickOpen, setQuickOpen] = useState(false);
   const heat = productHeat(product);
-  const attrs = product?.attributes;
-  const telugu = attrs?.telugu ?? attrs?.te;
+  const telugu = product.attributes?.telugu;
   const image = product.images[0];
 
   const addLabel = p.soldOut ? "Sold out" : p.error ? "Try again" : "Add";
@@ -139,10 +138,11 @@ export function ProductCard({
                   type="button"
                   disabled={vSoldOut}
                   onClick={() => p.setVariantId(v.id)}
-                  className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:cursor-not-allowed disabled:line-through disabled:opacity-40 ${active
-                    ? "border-chilli bg-chilli text-cream"
-                    : "border-maroon/20 text-maroon hover:border-chilli"
-                    }`}
+                  className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:cursor-not-allowed disabled:line-through disabled:opacity-40 ${
+                    active
+                      ? "border-chilli bg-chilli text-cream"
+                      : "border-maroon/20 text-maroon hover:border-chilli"
+                  }`}
                 >
                   {v.attributes.weight ?? v.attributes.size ?? v.name}
                 </button>

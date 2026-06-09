@@ -1,11 +1,11 @@
 "use client";
 
+import type { Product } from "@usestorekit/sdk";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { Product } from "@usestorekit/sdk";
 import { formatMoney } from "../lib/format";
 import { productHeat } from "../lib/product";
 import { useProductPurchase } from "../lib/use-product-purchase";
@@ -53,8 +53,7 @@ function QuickViewContent({
   const panelRef = useRef<HTMLDivElement>(null);
   const images = product.images;
   const heat = productHeat(product);
-  const attrs = product.attributes;
-  const telugu = attrs?.telugu ?? attrs?.te;
+  const telugu = product.attributes?.telugu;
   const [activeImg, setActiveImg] = useState(0);
   const heroImg = images[activeImg];
 

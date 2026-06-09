@@ -39,7 +39,7 @@ export default async function ProductPage({
 
   const category = categoryMap.get(product.categoryId) ?? null;
   const heat = productHeat(product);
-  const telugu = product.attributes.telugu ?? product.attributes.te;
+  const telugu = product.attributes.telugu;
   const variant = product.variants[0];
   const weight =
     variant?.attributes.weight ??
