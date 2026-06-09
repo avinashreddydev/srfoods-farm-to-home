@@ -147,7 +147,8 @@ export function ProductCard({
           </div>
         )}
 
-        {/* Add button, or cart-bound stepper once in the cart */}
+        {/* Add button, or cart-bound stepper once in the cart.
+            Outlined "Add" vs. solid stepper keeps the two states distinct. */}
         <div className="mt-4">
           {p.inCart > 0 ? (
             <div className="flex items-center justify-between rounded-full bg-chilli px-1.5 py-1 text-cream shadow-[0_4px_0_#5a0512]">
@@ -160,8 +161,13 @@ export function ProductCard({
               >
                 −
               </button>
-              <span className="min-w-[2ch] text-center text-sm font-bold tabular-nums">
-                {p.inCart}
+              <span className="flex flex-col items-center leading-none">
+                <span className="text-sm font-bold tabular-nums">
+                  {p.inCart}
+                </span>
+                <span className="text-[9px] uppercase tracking-wider opacity-80">
+                  in cart
+                </span>
               </span>
               <button
                 type="button"
@@ -178,8 +184,9 @@ export function ProductCard({
               type="button"
               onClick={p.inc}
               disabled={p.soldOut || p.busy}
-              className="w-full rounded-full bg-chilli px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-cream shadow-[0_4px_0_#5a0512] transition-transform hover:-translate-y-0.5 active:translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+              className="flex w-full items-center justify-center gap-1.5 rounded-full border-2 border-chilli bg-white px-3 py-2 text-xs font-bold uppercase tracking-wider text-chilli transition-colors hover:bg-chilli hover:text-cream disabled:cursor-not-allowed disabled:border-charcoal/15 disabled:bg-transparent disabled:text-charcoal/40"
             >
+              {!p.soldOut && !p.error && <CartPlus />}
               {addLabel}
             </button>
           )}
@@ -193,6 +200,28 @@ export function ProductCard({
         initialVariantId={p.variantId}
       />
     </motion.article>
+  );
+}
+
+function CartPlus() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <title>Add to cart</title>
+      <path d="M3 4h2l2.5 11h9l2-7H6.5" />
+      <circle cx="9" cy="19" r="1.4" fill="currentColor" stroke="none" />
+      <circle cx="17" cy="19" r="1.4" fill="currentColor" stroke="none" />
+      <path d="M19 3v4M21 5h-4" />
+    </svg>
   );
 }
 
