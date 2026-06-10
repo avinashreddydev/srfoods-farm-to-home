@@ -59,7 +59,7 @@ export default async function ContactPage() {
             <InfoCard
               icon="✉️"
               title="Email"
-              lines={["hello@srfoods.in", "orders@srfoods.in"]}
+              lines={["info@srfoodsfarmtohome.in"]}
             />
             <div className="rounded-3xl bg-maroon p-8 text-cream">
               <h3 className="font-display text-xl font-bold text-turmeric">
