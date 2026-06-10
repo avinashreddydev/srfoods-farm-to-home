@@ -35,11 +35,12 @@ export default function ErrorBoundary({
       <button
         type="button"
         onClick={() => unstable_retry()}
+        data-haptic="medium"
         className={`btn-primary ${linkBase}`}
       >
         Try Again <span>↻</span>
       </button>
-      <Link href="/" className={`btn-outline ${linkBase}`}>
+      <Link href="/" data-haptic="light" className={`btn-outline ${linkBase}`}>
         Back Home
       </Link>
     </ErrorScreen>

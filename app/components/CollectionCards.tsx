@@ -30,6 +30,7 @@ export function CollectionCards({ collections }: { collections: Category[] }) {
           >
             <Link
               href={`/category/${c.slug}`}
+              data-haptic="medium"
               className="group relative block overflow-hidden rounded-[2rem] bg-charcoal text-cream"
             >
               <div className="relative aspect-[4/5] md:aspect-[5/4]">

@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthModalProvider } from "./components/AuthModal";
 import { CartSheetProvider } from "./components/CartSheet";
 import { Footer } from "./components/Footer";
+import { HapticEngine } from "./components/HapticEngine";
 import { Nav } from "./components/Nav";
 import { getCollections } from "./lib/storefront";
 
@@ -39,6 +40,7 @@ export default async function RootLayout({
       className={`${body.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-charcoal">
+        <HapticEngine />
         <AuthModalProvider>
           <CartSheetProvider>
             <Nav categories={categoryLinks} />

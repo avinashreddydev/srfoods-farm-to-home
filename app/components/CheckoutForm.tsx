@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { storefront } from "@/lib/storekit-client";
 import { type CheckoutState, startCheckout } from "../checkout/actions";
 import { formatMoney } from "../lib/format";
+import { triggerHaptic } from "../lib/haptics";
 import { formatPhoneIndia } from "../lib/phone";
 import { useAuthModal } from "./AuthModal";
 
@@ -16,6 +17,11 @@ export function CheckoutForm() {
   const { addresses, loading: addressLoading } = storefront.useAddresses();
   const { open: openLogin } = useAuthModal();
   const [state, formAction, pending] = useActionState(startCheckout, INITIAL);
+
+  // Fires when the server action comes back with a validation/payment error.
+  useEffect(() => {
+    if (state.error) triggerHaptic("error");
+  }, [state]);
 
   // Wait for session + saved addresses so prefilled defaults are present on the
   // first (uncontrolled) render of the form fields.
@@ -41,6 +47,7 @@ export function CheckoutForm() {
         </p>
         <Link
           href="/category/pickles"
+          data-haptic="medium"
           className="btn-primary mt-6 inline-flex rounded-full px-6 py-3 text-sm font-bold uppercase tracking-wider"
         >
           Shop Pickles →
@@ -83,6 +90,7 @@ export function CheckoutForm() {
             </span>
             <Link
               href="/account"
+              data-haptic="light"
               className="shrink-0 text-xs font-bold uppercase tracking-wider text-chilli hover:text-chilli-deep"
             >
               Account
@@ -96,6 +104,7 @@ export function CheckoutForm() {
             <button
               type="button"
               onClick={openLogin}
+              data-haptic="medium"
               className="shrink-0 text-xs font-bold uppercase tracking-wider text-chilli hover:text-chilli-deep"
             >
               Sign in
@@ -218,6 +227,7 @@ export function CheckoutForm() {
         <button
           type="submit"
           disabled={pending}
+          data-haptic="heavy"
           className="btn-primary mt-6 flex w-full justify-center rounded-full px-7 py-3.5 text-sm font-bold uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-60"
         >
           {pending ? "Redirecting to payment…" : "Pay securely →"}

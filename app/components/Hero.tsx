@@ -60,12 +60,14 @@ export function Hero() {
           >
             <Link
               href="/category/pickles"
+              data-haptic="medium"
               className="btn-primary inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold uppercase tracking-wider"
             >
               Shop Pickles <span>→</span>
             </Link>
             <Link
               href="/category/karam"
+              data-haptic="light"
               className="btn-outline inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-bold uppercase tracking-wider"
             >
               Shop Karam

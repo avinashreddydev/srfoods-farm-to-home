@@ -16,6 +16,7 @@ export function EmptyCategory({ label }: { label: string }) {
       </p>
       <Link
         href="/"
+        data-haptic="medium"
         className="btn-primary mt-6 inline-flex rounded-full px-6 py-3 text-sm font-bold uppercase tracking-wider"
       >
         Back home

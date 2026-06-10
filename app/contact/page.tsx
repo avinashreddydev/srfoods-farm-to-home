@@ -42,6 +42,7 @@ export default async function ContactPage() {
               </div>
               <button
                 type="button"
+                data-haptic="medium"
                 className="btn-primary mt-2 rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"
               >
                 Send Message →

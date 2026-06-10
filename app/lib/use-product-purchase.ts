@@ -7,6 +7,7 @@
 import type { Product, ProductVariant } from "@usestorekit/sdk";
 import { useMemo, useState } from "react";
 import { storefront } from "@/lib/storekit-client";
+import { triggerHaptic } from "./haptics";
 
 export type ProductPurchase = {
   variants: ProductVariant[];
@@ -92,6 +93,7 @@ export function useProductPurchase(
     setBusy(false);
     if (failed) {
       setError(true);
+      triggerHaptic("error");
       setTimeout(() => setError(false), 2500);
     }
   }

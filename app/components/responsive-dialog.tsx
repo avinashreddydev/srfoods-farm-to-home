@@ -108,6 +108,7 @@ function withTrigger(
   asChild: boolean,
   className: string | undefined,
   onActivate: () => void,
+  haptic: string,
 ) {
   if (asChild && isValidElement(children)) {
     const child = children as Clickable;
@@ -119,7 +120,12 @@ function withTrigger(
     });
   }
   return (
-    <button type="button" onClick={onActivate} className={className}>
+    <button
+      type="button"
+      onClick={onActivate}
+      data-haptic={haptic}
+      className={className}
+    >
       {children}
     </button>
   );
@@ -135,7 +141,13 @@ export function DialogTrigger({
   className?: string;
 }) {
   const { setOpen } = useDialogContext("DialogTrigger");
-  return withTrigger(children, asChild, className, () => setOpen(true));
+  return withTrigger(
+    children,
+    asChild,
+    className,
+    () => setOpen(true),
+    "medium",
+  );
 }
 
 export function DialogClose({
@@ -148,7 +160,13 @@ export function DialogClose({
   className?: string;
 }) {
   const { setOpen } = useDialogContext("DialogClose");
-  return withTrigger(children, asChild, className, () => setOpen(false));
+  return withTrigger(
+    children,
+    asChild,
+    className,
+    () => setOpen(false),
+    "light",
+  );
 }
 
 export function DialogContent({
@@ -241,6 +259,7 @@ function DialogSurface({
         type="button"
         aria-label="Close"
         onClick={close}
+        data-haptic="light"
         className="absolute inset-0 bg-charcoal/60 backdrop-blur-sm"
       />
 
@@ -267,6 +286,7 @@ function DialogSurface({
             type="button"
             onClick={close}
             aria-label="Close"
+            data-haptic="light"
             className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full text-charcoal/40 transition-colors hover:bg-cream-soft hover:text-charcoal"
           >
             <svg

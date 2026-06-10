@@ -38,6 +38,7 @@ export function ProductCard({
       <div className="relative aspect-square overflow-hidden bg-cream-soft">
         <Link
           href={`/products/${product.slug}`}
+          data-haptic="light"
           className="absolute inset-0 block"
           aria-label={product.name}
         >
@@ -79,6 +80,7 @@ export function ProductCard({
         <button
           type="button"
           onClick={() => setQuickOpen(true)}
+          data-haptic="medium"
           className="absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-cream/95 px-4 py-2 text-xs font-bold uppercase tracking-wider text-maroon opacity-100 shadow-lg ring-1 ring-maroon/10 transition-all hover:bg-chilli hover:text-cream focus-visible:opacity-100 md:opacity-0 md:group-hover:opacity-100"
         >
           Quick view
@@ -99,7 +101,7 @@ export function ProductCard({
             {telugu}
           </span>
         )}
-        <Link href={`/products/${product.slug}`}>
+        <Link href={`/products/${product.slug}`} data-haptic="light">
           <h3 className="font-display text-lg font-bold leading-tight text-maroon hover:text-chilli">
             {product.name}
           </h3>
@@ -138,6 +140,7 @@ export function ProductCard({
                   type="button"
                   disabled={vSoldOut}
                   onClick={() => p.setVariantId(v.id)}
+                  data-haptic="selection"
                   className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:cursor-not-allowed disabled:line-through disabled:opacity-40 ${
                     active
                       ? "border-chilli bg-chilli text-cream"
@@ -161,6 +164,7 @@ export function ProductCard({
                 aria-label="Decrease quantity"
                 onClick={p.dec}
                 disabled={p.busy}
+                data-haptic="selection"
                 className="flex h-8 w-8 items-center justify-center rounded-full text-lg font-bold transition-colors hover:bg-chilli-deep disabled:opacity-50"
               >
                 −
@@ -178,6 +182,7 @@ export function ProductCard({
                 aria-label="Increase quantity"
                 onClick={p.inc}
                 disabled={p.busy || p.atMax}
+                data-haptic="selection"
                 className="flex h-8 w-8 items-center justify-center rounded-full text-lg font-bold transition-colors hover:bg-chilli-deep disabled:opacity-50"
               >
                 +
@@ -188,6 +193,7 @@ export function ProductCard({
               type="button"
               onClick={p.inc}
               disabled={p.soldOut || p.busy}
+              data-haptic="medium"
               className="flex w-full items-center justify-center gap-1.5 rounded-full border-2 border-chilli bg-white px-3 py-2 text-xs font-bold uppercase tracking-wider text-chilli transition-colors hover:bg-chilli hover:text-cream disabled:cursor-not-allowed disabled:border-charcoal/15 disabled:bg-transparent disabled:text-charcoal/40"
             >
               {!p.soldOut && !p.error && <CartPlus />}

@@ -24,13 +24,21 @@ export default function NotFound() {
       }
       subtitle="The page you're looking for slipped out of the pantry. Don't worry — our slow-cured pickles and stone-ground karam are still on the shelf."
     >
-      <Link href="/" className={`btn-primary ${linkBase}`}>
+      <Link href="/" data-haptic="medium" className={`btn-primary ${linkBase}`}>
         Back Home <span>→</span>
       </Link>
-      <Link href="/category/pickles" className={`btn-outline ${linkBase}`}>
+      <Link
+        href="/category/pickles"
+        data-haptic="light"
+        className={`btn-outline ${linkBase}`}
+      >
         Shop Pickles
       </Link>
-      <Link href="/category/karam" className={`btn-outline ${linkBase}`}>
+      <Link
+        href="/category/karam"
+        data-haptic="light"
+        className={`btn-outline ${linkBase}`}
+      >
         Shop Karam
       </Link>
     </ErrorScreen>

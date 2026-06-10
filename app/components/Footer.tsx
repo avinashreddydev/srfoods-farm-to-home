@@ -41,12 +41,20 @@ export async function Footer() {
           </h4>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="/category/pickles" className="hover:text-turmeric">
+              <Link
+                href="/category/pickles"
+                data-haptic="light"
+                className="hover:text-turmeric"
+              >
                 Pickles
               </Link>
             </li>
             <li>
-              <Link href="/category/karam" className="hover:text-turmeric">
+              <Link
+                href="/category/karam"
+                data-haptic="light"
+                className="hover:text-turmeric"
+              >
                 Karam Powders
               </Link>
             </li>
@@ -68,6 +76,7 @@ export async function Footer() {
                 <li key={page.id}>
                   <Link
                     href={pageHref(page.slug)}
+                    data-haptic="light"
                     className="hover:text-turmeric"
                   >
                     {page.title}
@@ -93,6 +102,7 @@ export async function Footer() {
               <a
                 key={s}
                 href="#"
+                data-haptic="light"
                 className="rounded-full border border-cream/20 px-3 py-1 text-xs hover:border-turmeric hover:text-turmeric"
               >
                 {s}
@@ -116,6 +126,7 @@ export async function Footer() {
             />
             <button
               type="button"
+              data-haptic="light"
               className="bg-turmeric px-4 text-sm font-semibold text-maroon"
             >
               Join

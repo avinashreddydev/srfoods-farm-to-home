@@ -51,7 +51,7 @@ export default async function ContentPage({
       <section className="bg-cream py-14 md:py-20">
         <div className="mx-auto max-w-3xl px-6 md:px-8">
           <nav className="mb-8 flex items-center gap-2 text-xs uppercase tracking-wider text-charcoal/50">
-            <Link href="/" className="hover:text-chilli">
+            <Link href="/" data-haptic="light" className="hover:text-chilli">
               Home
             </Link>
             <span>/</span>

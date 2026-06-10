@@ -55,7 +55,7 @@ export default async function ProductPage({
       <section className="bg-cream py-10 md:py-16">
         <div className="mx-auto max-w-7xl px-6 md:px-8">
           <nav className="mb-8 flex items-center gap-2 text-xs uppercase tracking-wider text-charcoal/50">
-            <Link href="/" className="hover:text-chilli">
+            <Link href="/" data-haptic="light" className="hover:text-chilli">
               Home
             </Link>
             <span>/</span>
@@ -63,6 +63,7 @@ export default async function ProductPage({
               <>
                 <Link
                   href={`/category/${category.slug}`}
+                  data-haptic="light"
                   className="capitalize hover:text-chilli"
                 >
                   {category.name}

@@ -39,12 +39,14 @@ function Result() {
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
             href="/"
+            data-haptic="medium"
             className="btn-primary rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"
           >
             Back home
           </Link>
           <Link
             href="/category/pickles"
+            data-haptic="light"
             className="rounded-full border-2 border-maroon px-7 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream"
           >
             Keep shopping
@@ -63,6 +65,7 @@ function Result() {
         <button
           type="button"
           onClick={retry}
+          data-haptic="medium"
           className="btn-primary mt-8 inline-flex rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"
         >
           Check again
@@ -81,6 +84,7 @@ function Result() {
         <button
           type="button"
           onClick={retry}
+          data-haptic="medium"
           className="btn-primary rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"
         >
           Retry
@@ -88,6 +92,7 @@ function Result() {
         <button
           type="button"
           onClick={openCart}
+          data-haptic="medium"
           className="rounded-full border-2 border-maroon px-7 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream"
         >
           Back to cart

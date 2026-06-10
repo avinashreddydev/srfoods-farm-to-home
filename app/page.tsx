@@ -64,6 +64,7 @@ export default async function Home() {
               <Link
                 key={c.id}
                 href={`/category/${c.slug}`}
+                data-haptic="medium"
                 className={
                   i === 0
                     ? "btn-primary inline-flex rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"

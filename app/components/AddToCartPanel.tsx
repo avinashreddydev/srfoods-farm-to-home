@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { storefront } from "@/lib/storekit-client";
 import { formatMoney } from "../lib/format";
+import { triggerHaptic } from "../lib/haptics";
 import { useProductPurchase } from "../lib/use-product-purchase";
 import { useCartSheet } from "./CartSheet";
 
@@ -34,6 +35,8 @@ export function AddToCartPanel({ product }: { product: Product }) {
     setState("adding");
     const { error } = await add({ variantId, quantity: qty });
     setState(error ? "error" : "added");
+    // Outcome haptic lands with the "Added ✓" / error message, not the tap.
+    triggerHaptic(error ? "error" : "success");
     if (!error) setTimeout(() => setState("idle"), 2500);
   }
 
@@ -65,6 +68,7 @@ export function AddToCartPanel({ product }: { product: Product }) {
                   type="button"
                   disabled={vSoldOut}
                   onClick={() => setVariantId(v.id)}
+                  data-haptic="selection"
                   className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                     active
                       ? "border-chilli bg-chilli text-cream"
@@ -84,6 +88,7 @@ export function AddToCartPanel({ product }: { product: Product }) {
           <button
             type="button"
             aria-label="Decrease quantity"
+            data-haptic="selection"
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             className="px-4 py-2 text-lg font-bold text-maroon disabled:opacity-40"
             disabled={qty <= 1}
@@ -96,6 +101,7 @@ export function AddToCartPanel({ product }: { product: Product }) {
           <button
             type="button"
             aria-label="Increase quantity"
+            data-haptic="selection"
             onClick={() => setQty((q) => q + 1)}
             className="px-4 py-2 text-lg font-bold text-maroon"
           >
@@ -107,6 +113,7 @@ export function AddToCartPanel({ product }: { product: Product }) {
           type="button"
           onClick={handleAdd}
           disabled={soldOut || state === "adding"}
+          data-haptic="light"
           className="btn-primary flex-1 rounded-full px-7 py-3.5 text-sm font-bold uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-50"
         >
           {soldOut
@@ -131,6 +138,7 @@ export function AddToCartPanel({ product }: { product: Product }) {
           <button
             type="button"
             onClick={openCart}
+            data-haptic="medium"
             className="text-sm font-bold uppercase tracking-wider text-chilli hover:underline"
           >
             View cart →

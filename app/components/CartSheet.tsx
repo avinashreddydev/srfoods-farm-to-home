@@ -68,7 +68,12 @@ export function CartSheetLink({
 }) {
   const { open } = useCartSheet();
   return (
-    <button type="button" onClick={open} className={className}>
+    <button
+      type="button"
+      onClick={open}
+      data-haptic="medium"
+      className={className}
+    >
       {children}
     </button>
   );
@@ -111,6 +116,7 @@ function CartSheet({
             type="button"
             aria-label="Close cart"
             onClick={onClose}
+            data-haptic="light"
             className="absolute inset-0 bg-charcoal/60 backdrop-blur-sm"
           />
 
@@ -172,6 +178,7 @@ function CartBody({ onClose }: { onClose: () => void }) {
           type="button"
           onClick={onClose}
           aria-label="Close cart"
+          data-haptic="light"
           className="flex h-9 w-9 items-center justify-center rounded-full text-charcoal/50 transition-colors hover:bg-cream-soft hover:text-charcoal"
         >
           <svg
@@ -202,6 +209,7 @@ function CartBody({ onClose }: { onClose: () => void }) {
           <button
             type="button"
             onClick={() => location.reload()}
+            data-haptic="medium"
             className="btn-primary inline-flex rounded-full px-6 py-3 text-sm font-bold uppercase tracking-wider"
           >
             Try again
@@ -220,6 +228,7 @@ function CartBody({ onClose }: { onClose: () => void }) {
                 await clear();
                 setClearing(false);
               }}
+              data-haptic="warning"
               className="text-xs font-bold uppercase tracking-wider text-charcoal/50 hover:text-chilli disabled:opacity-50"
             >
               Clear cart
@@ -234,6 +243,7 @@ function CartBody({ onClose }: { onClose: () => void }) {
                   <Link
                     href={`/products/${item.variant.product.slug}`}
                     onClick={onClose}
+                    data-haptic="light"
                     className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-cream-soft ring-1 ring-maroon/10"
                   >
                     {img ? (
@@ -255,6 +265,7 @@ function CartBody({ onClose }: { onClose: () => void }) {
                     <Link
                       href={`/products/${item.variant.product.slug}`}
                       onClick={onClose}
+                      data-haptic="light"
                       className="font-display font-bold leading-snug text-maroon hover:text-chilli"
                     >
                       {item.variant.product.name}
@@ -270,6 +281,7 @@ function CartBody({ onClose }: { onClose: () => void }) {
                           aria-label="Decrease quantity"
                           disabled={busy || item.quantity <= 1}
                           onClick={() => changeQty(item.id, item.quantity - 1)}
+                          data-haptic="selection"
                           className="px-3 py-1.5 font-bold text-maroon disabled:opacity-40"
                         >
                           −
@@ -282,6 +294,7 @@ function CartBody({ onClose }: { onClose: () => void }) {
                           aria-label="Increase quantity"
                           disabled={busy}
                           onClick={() => changeQty(item.id, item.quantity + 1)}
+                          data-haptic="selection"
                           className="px-3 py-1.5 font-bold text-maroon disabled:opacity-40"
                         >
                           +
@@ -291,6 +304,7 @@ function CartBody({ onClose }: { onClose: () => void }) {
                         type="button"
                         disabled={busy}
                         onClick={() => removeLine(item.id)}
+                        data-haptic="warning"
                         className="text-xs font-semibold uppercase tracking-wider text-charcoal/50 hover:text-chilli disabled:opacity-40"
                       >
                         Remove
@@ -362,6 +376,7 @@ function CartSummary({
       <Link
         href="/checkout"
         onClick={onClose}
+        data-haptic="medium"
         className="btn-primary mt-5 flex justify-center rounded-full px-7 py-3.5 text-sm font-bold uppercase tracking-wider"
       >
         Proceed to checkout →
@@ -369,6 +384,7 @@ function CartSummary({
       <button
         type="button"
         onClick={onClose}
+        data-haptic="light"
         className="mt-3 flex w-full justify-center text-xs font-semibold uppercase tracking-wider text-charcoal/50 hover:text-chilli"
       >
         Continue shopping
@@ -403,6 +419,7 @@ function EmptyCart({ onClose }: { onClose: () => void }) {
         <Link
           href="/category/pickles"
           onClick={onClose}
+          data-haptic="medium"
           className="btn-primary rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"
         >
           Shop Pickles →
@@ -410,6 +427,7 @@ function EmptyCart({ onClose }: { onClose: () => void }) {
         <Link
           href="/category/karam"
           onClick={onClose}
+          data-haptic="light"
           className="rounded-full border-2 border-maroon px-7 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream"
         >
           Shop Karam

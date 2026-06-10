@@ -128,6 +128,7 @@ function QuickViewContent({
           type="button"
           onClick={onClose}
           aria-label="Close quick view"
+          data-haptic="light"
           className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-cream/90 text-maroon shadow ring-1 ring-maroon/10 transition-colors hover:bg-chilli hover:text-cream"
         >
           <svg
@@ -187,6 +188,7 @@ function QuickViewContent({
                   type="button"
                   onClick={() => setActiveImg(i)}
                   aria-label={`View image ${i + 1}`}
+                  data-haptic="selection"
                   className={`relative aspect-square w-16 overflow-hidden rounded-lg ring-1 transition-all ${
                     i === activeImg
                       ? "ring-2 ring-chilli"
@@ -267,6 +269,7 @@ function QuickViewContent({
                       type="button"
                       disabled={vSoldOut}
                       onClick={() => p.setVariantId(v.id)}
+                      data-haptic="selection"
                       className={`rounded-full border-2 px-4 py-1.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:line-through disabled:opacity-40 ${
                         active
                           ? "border-chilli bg-chilli text-cream"
@@ -289,6 +292,7 @@ function QuickViewContent({
                   aria-label="Decrease quantity"
                   onClick={p.dec}
                   disabled={p.busy}
+                  data-haptic="selection"
                   className="flex h-10 w-10 items-center justify-center rounded-full text-2xl font-bold transition-colors hover:bg-chilli-deep disabled:opacity-50"
                 >
                   −
@@ -306,6 +310,7 @@ function QuickViewContent({
                   aria-label="Increase quantity"
                   onClick={p.inc}
                   disabled={p.busy || p.atMax}
+                  data-haptic="selection"
                   className="flex h-10 w-10 items-center justify-center rounded-full text-2xl font-bold transition-colors hover:bg-chilli-deep disabled:opacity-50"
                 >
                   +
@@ -316,6 +321,7 @@ function QuickViewContent({
                 type="button"
                 onClick={p.inc}
                 disabled={p.soldOut || p.busy}
+                data-haptic="medium"
                 className="btn-primary w-full rounded-full px-6 py-3.5 text-sm font-bold uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {addLabel}
@@ -326,6 +332,7 @@ function QuickViewContent({
               <Link
                 href={`/products/${product.slug}`}
                 onClick={onClose}
+                data-haptic="light"
                 className="text-sm font-bold uppercase tracking-wider text-chilli hover:underline"
               >
                 View full details →
@@ -337,6 +344,7 @@ function QuickViewContent({
                     onClose();
                     openCart();
                   }}
+                  data-haptic="medium"
                   className="text-sm font-bold uppercase tracking-wider text-maroon hover:underline"
                 >
                   Go to cart →

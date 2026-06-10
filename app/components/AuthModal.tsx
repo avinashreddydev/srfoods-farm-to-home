@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import { storefront } from "@/lib/storekit-client";
+import { triggerHaptic } from "../lib/haptics";
 import { formatPhoneIndia, localDigitsIndia, toE164India } from "../lib/phone";
 import { Dialog, DialogContent, DialogTitle } from "./responsive-dialog";
 
@@ -130,6 +131,7 @@ function AuthPanel({
   async function sendOtp() {
     if (!e164) {
       setError("Enter a valid 10-digit mobile number.");
+      triggerHaptic("error");
       return;
     }
     setError(null);
@@ -138,17 +140,21 @@ function AuthPanel({
     setPending(false);
     if (err) {
       setError(err.message ?? "Couldn't send the code. Please try again.");
+      triggerHaptic("error");
       return;
     }
     setStep("otp");
     setOtp("");
     setCooldown(RESEND_SECONDS);
+    // Lands with the slide to the OTP step.
+    triggerHaptic("medium");
   }
 
   async function verify() {
     if (!e164) return;
     if (otp.length < 4) {
       setError("Enter the code we texted you.");
+      triggerHaptic("error");
       return;
     }
     setError(null);
@@ -157,12 +163,14 @@ function AuthPanel({
     if (err) {
       setPending(false);
       setError(err.message ?? "That code didn't work. Please try again.");
+      triggerHaptic("error");
       return;
     }
     // Login claims the guest cart + sets the session cookie. Refresh the shared
     // session/cart stores so the nav, checkout and account update everywhere.
     await Promise.all([session.refresh(), cart.refresh()]);
     setPending(false);
+    triggerHaptic("success");
     onSuccess();
   }
 
@@ -229,6 +237,7 @@ function AuthPanel({
             <button
               type="submit"
               disabled={pending || !e164}
+              data-haptic="light"
               className="btn-primary mt-6 flex w-full justify-center rounded-full px-7 py-3.5 text-sm font-bold uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-60"
             >
               {pending ? "Sending code…" : "Send OTP →"}
@@ -260,6 +269,7 @@ function AuthPanel({
                   setError(null);
                   setOtp("");
                 }}
+                data-haptic="light"
                 className="font-semibold text-chilli underline underline-offset-2 hover:text-chilli-deep"
               >
                 Change
@@ -277,6 +287,7 @@ function AuthPanel({
                 autoComplete="one-time-code"
                 maxLength={6}
                 placeholder="••••••"
+                data-haptic-input="selection"
                 value={otp}
                 onChange={(e) =>
                   setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
@@ -290,6 +301,7 @@ function AuthPanel({
             <button
               type="submit"
               disabled={pending || otp.length < 4}
+              data-haptic="light"
               className="btn-primary mt-6 flex w-full justify-center rounded-full px-7 py-3.5 text-sm font-bold uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-60"
             >
               {pending ? "Verifying…" : "Verify & continue →"}
@@ -303,6 +315,7 @@ function AuthPanel({
                   type="button"
                   disabled={pending}
                   onClick={() => void sendOtp()}
+                  data-haptic="light"
                   className="font-semibold text-chilli hover:text-chilli-deep disabled:opacity-50"
                 >
                   Resend code

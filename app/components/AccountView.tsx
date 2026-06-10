@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { storefront } from "@/lib/storekit-client";
 import { formatMoney } from "../lib/format";
+import { triggerHaptic } from "../lib/haptics";
 import { formatPhoneIndia } from "../lib/phone";
 import { useAuthModal } from "./AuthModal";
 import { useCartSheet } from "./CartSheet";
@@ -143,6 +144,7 @@ export function AccountView() {
           type="button"
           onClick={logout}
           disabled={loggingOut}
+          data-haptic="warning"
           className="rounded-full border-2 border-maroon/20 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-maroon transition-colors hover:border-chilli hover:text-chilli disabled:opacity-50"
         >
           {loggingOut ? "Signing out…" : "Sign out"}
@@ -175,6 +177,7 @@ function SignedOut() {
       <button
         type="button"
         onClick={open}
+        data-haptic="medium"
         className="btn-primary mt-6 inline-flex rounded-full px-7 py-3 text-sm font-bold uppercase tracking-wider"
       >
         Sign in →
@@ -231,9 +234,11 @@ function ProfileCard() {
     setSaving(false);
     if (err) {
       setError(err.message ?? "Couldn't save your details.");
+      triggerHaptic("error");
       return;
     }
     setEditing(false);
+    triggerHaptic("success");
   }
 
   return (
@@ -244,6 +249,7 @@ function ProfileCard() {
           <button
             type="button"
             onClick={() => setEditing(true)}
+            data-haptic="light"
             className="text-xs font-bold uppercase tracking-wider text-chilli hover:text-chilli-deep"
           >
             Edit
@@ -276,6 +282,7 @@ function ProfileCard() {
               type="button"
               onClick={save}
               disabled={saving}
+              data-haptic="light"
               className="btn-primary rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider disabled:opacity-60"
             >
               {saving ? "Saving…" : "Save"}
@@ -288,6 +295,7 @@ function ProfileCard() {
                 setName(customer.name ?? "");
                 setEmail(customer.email ?? "");
               }}
+              data-haptic="light"
               className="rounded-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-charcoal/50 hover:text-charcoal"
             >
               Cancel
@@ -340,6 +348,7 @@ function OrdersCard() {
           <p className="text-sm text-charcoal/60">No orders yet.</p>
           <Link
             href="/category/pickles"
+            data-haptic="light"
             className="mt-3 inline-flex text-xs font-bold uppercase tracking-wider text-chilli hover:text-chilli-deep"
           >
             Start shopping →
@@ -366,6 +375,7 @@ function OrderRow({ order }: { order: Order }) {
         <DialogTrigger asChild>
           <button
             type="button"
+            data-haptic="medium"
             className="group -mx-3 flex w-full items-center gap-3 rounded-2xl px-3 py-4 text-left transition-colors hover:bg-cream-soft/60"
           >
             <div className="min-w-0 flex-1">
@@ -441,6 +451,8 @@ function OrderDetails({
       }
     }
     setReordering(false);
+    // Lands as the cart sheet slides in with the re-added items.
+    triggerHaptic("success");
     onClose();
     openCart();
   }
@@ -553,6 +565,7 @@ function OrderDetails({
         {needsPayment && (
           <a
             href={order.paymentRedirectUrl ?? "#"}
+            data-haptic="medium"
             className="btn-primary flex justify-center rounded-full px-6 py-3 text-sm font-bold uppercase tracking-wider"
           >
             Complete payment →
@@ -563,6 +576,7 @@ function OrderDetails({
             href={order.trackingUrl}
             target="_blank"
             rel="noreferrer"
+            data-haptic="light"
             className="flex justify-center rounded-full border-2 border-maroon px-6 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream"
           >
             Track order →
@@ -573,6 +587,7 @@ function OrderDetails({
             type="button"
             onClick={reorder}
             disabled={reordering}
+            data-haptic="light"
             className={
               needsPayment
                 ? "flex justify-center rounded-full border-2 border-maroon px-6 py-3 text-sm font-bold uppercase tracking-wider text-maroon transition-colors hover:bg-maroon hover:text-cream disabled:opacity-60"
@@ -585,6 +600,7 @@ function OrderDetails({
         <div className="flex items-center justify-center gap-4 pt-1 text-xs font-bold uppercase tracking-wider">
           <Link
             href="/contact"
+            data-haptic="light"
             className="text-charcoal/50 transition-colors hover:text-chilli"
           >
             Need help?
@@ -773,6 +789,7 @@ function AddressesCard() {
           <button
             type="button"
             onClick={() => setAdding(true)}
+            data-haptic="light"
             className="text-xs font-bold uppercase tracking-wider text-chilli hover:text-chilli-deep"
           >
             + Add
@@ -850,6 +867,7 @@ function AddressRow({
             type="button"
             disabled={busy}
             onClick={run(onMakeDefault)}
+            data-haptic="selection"
             className="text-charcoal/50 hover:text-maroon disabled:opacity-50"
           >
             Set default
@@ -859,6 +877,7 @@ function AddressRow({
           type="button"
           disabled={busy}
           onClick={run(onRemove)}
+          data-haptic="warning"
           className="text-charcoal/50 hover:text-chilli disabled:opacity-50"
         >
           Remove
@@ -917,8 +936,10 @@ function AddressForm({
       setError(
         (err as { message?: string }).message ?? "Couldn't save address.",
       );
+      triggerHaptic("error");
       return;
     }
+    triggerHaptic("success");
     onClose();
   }
 
@@ -961,6 +982,7 @@ function AddressForm({
         <button
           type="submit"
           disabled={saving}
+          data-haptic="light"
           className="btn-primary rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save address"}
@@ -968,6 +990,7 @@ function AddressForm({
         <button
           type="button"
           onClick={onClose}
+          data-haptic="light"
           className="rounded-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-charcoal/50 hover:text-charcoal"
         >
           Cancel

@@ -55,7 +55,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 md:px-8">
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/" data-haptic="light" className="flex items-center gap-3">
           <div className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-turmeric/70">
             <Image
               src="/logo.png"
@@ -83,6 +83,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
               <Link
                 key={l.href}
                 href={l.href}
+                data-haptic="selection"
                 className={`relative rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                   active ? "text-turmeric" : "text-cream/85 hover:text-turmeric"
                 }`}
@@ -103,7 +104,11 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
         <div className="flex items-center gap-2">
           {!sessionLoading &&
             (customer ? (
-              <Link href="/account" className={accountClass}>
+              <Link
+                href="/account"
+                data-haptic="light"
+                className={accountClass}
+              >
                 <UserIcon />
                 <span className="max-w-[7rem] truncate">
                   {firstName ?? "Account"}
@@ -113,6 +118,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
               <button
                 type="button"
                 onClick={openLogin}
+                data-haptic="medium"
                 className={accountClass}
               >
                 <UserIcon />
@@ -122,6 +128,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
           <button
             type="button"
             onClick={openCart}
+            data-haptic="medium"
             aria-label="Open cart"
             className="group relative inline-flex items-center gap-2 rounded-full bg-turmeric px-4 py-2 text-sm font-semibold text-maroon shadow-[0_4px_0_#7a5e10] transition-transform hover:-translate-y-0.5"
           >
@@ -134,6 +141,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
           <button
             type="button"
             aria-label="Toggle menu"
+            data-haptic="light"
             onClick={() => setOpen((s) => !s)}
             className="md:hidden rounded-full p-2 text-cream"
           >
@@ -167,6 +175,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
+                data-haptic="selection"
                 className="rounded-lg px-3 py-3 text-cream hover:bg-chilli-deep/40"
               >
                 {l.label}
@@ -176,6 +185,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
               <Link
                 href="/account"
                 onClick={() => setOpen(false)}
+                data-haptic="light"
                 className="flex items-center gap-2 rounded-lg px-3 py-3 text-turmeric hover:bg-chilli-deep/40"
               >
                 <UserIcon />
@@ -188,6 +198,7 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
                   setOpen(false);
                   openLogin();
                 }}
+                data-haptic="medium"
                 className="flex items-center gap-2 rounded-lg px-3 py-3 text-left text-turmeric hover:bg-chilli-deep/40"
               >
                 <UserIcon />
