@@ -83,6 +83,7 @@ export async function Footer() {
             Contact
           </h4>
           <ul className="space-y-2 text-sm">
+            <li>{contact.addressLines}</li>
             <li>{contact.shortAddress}</li>
             <li>{contact.phone}</li>
             <li>info@srfoodsfarmtohome.in</li>
