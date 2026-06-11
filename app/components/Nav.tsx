@@ -29,6 +29,8 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
   const [open, setOpen] = useState(false);
 
   const firstName = customer?.name?.trim().split(" ")[0];
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
   const accountActive = pathname.startsWith("/account");
   const accountClass = `group hidden items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors sm:inline-flex ${
     accountActive
@@ -77,22 +79,24 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
 
         <nav className="hidden items-center gap-1 md:flex">
           {links.map((l) => {
-            const active =
-              l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
+            const active = isActive(l.href);
             return (
               <Link
                 key={l.href}
                 href={l.href}
                 data-haptic="selection"
-                className={`relative rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                  active ? "text-turmeric" : "text-cream/85 hover:text-turmeric"
+                aria-current={active ? "page" : undefined}
+                className={`relative rounded-full px-4 py-2 text-sm transition-colors ${
+                  active
+                    ? "font-semibold text-turmeric"
+                    : "font-medium text-cream/85 hover:text-turmeric"
                 }`}
               >
                 {l.label}
                 {active && (
                   <motion.span
                     layoutId="nav-pill"
-                    className="absolute inset-0 -z-10 rounded-full bg-chilli-deep/60 ring-1 ring-turmeric/30"
+                    className="absolute inset-0 -z-10 rounded-full bg-chilli-deep ring-1 ring-turmeric/50"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -170,23 +174,36 @@ export function Nav({ categories = [] }: { categories?: NavLink[] }) {
           className="md:hidden overflow-hidden border-t border-chilli-deep/50 bg-maroon"
         >
           <div className="flex flex-col px-5 py-3">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                data-haptic="selection"
-                className="rounded-lg px-3 py-3 text-cream hover:bg-chilli-deep/40"
-              >
-                {l.label}
-              </Link>
-            ))}
+            {links.map((l) => {
+              const active = isActive(l.href);
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  data-haptic="selection"
+                  aria-current={active ? "page" : undefined}
+                  className={`rounded-lg border-l-2 px-3 py-3 transition-colors ${
+                    active
+                      ? "border-turmeric bg-chilli-deep/50 font-semibold text-turmeric"
+                      : "border-transparent text-cream hover:bg-chilli-deep/40"
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
             {customer ? (
               <Link
                 href="/account"
                 onClick={() => setOpen(false)}
                 data-haptic="light"
-                className="flex items-center gap-2 rounded-lg px-3 py-3 text-turmeric hover:bg-chilli-deep/40"
+                aria-current={accountActive ? "page" : undefined}
+                className={`flex items-center gap-2 rounded-lg border-l-2 px-3 py-3 text-turmeric transition-colors ${
+                  accountActive
+                    ? "border-turmeric bg-chilli-deep/50 font-semibold"
+                    : "border-transparent hover:bg-chilli-deep/40"
+                }`}
               >
                 <UserIcon />
                 {firstName ?? "My Account"}
