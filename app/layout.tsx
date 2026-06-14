@@ -19,10 +19,29 @@ const display = Playfair_Display({
   weight: ["700", "800", "900"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://srfoods-farmtohome.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "SR Foods — Spicy & Authentic Andhra Pickles & Karam",
   description:
     "Hand-crafted Guntur Mirchi karam, avakaya, gongura and pandu mirchi pickles. Farm-to-home Andhra flavours, shipped across India.",
+  openGraph: {
+    type: "website",
+    siteName: "SR Foods — Farm to Home",
+    title: "SR Foods — Spicy & Authentic Andhra Pickles & Karam",
+    description:
+      "Hand-crafted Guntur Mirchi karam, avakaya, gongura and pandu mirchi pickles. Farm-to-home Andhra flavours, shipped across India.",
+    url: siteUrl,
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SR Foods — Spicy & Authentic Andhra Pickles & Karam",
+    description:
+      "Hand-crafted Guntur Mirchi karam, avakaya, gongura and pandu mirchi pickles. Farm-to-home Andhra flavours, shipped across India.",
+  },
 };
 
 export default async function RootLayout({
